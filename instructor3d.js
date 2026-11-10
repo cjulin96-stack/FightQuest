@@ -104,7 +104,8 @@ async function mount(host) {
       "motion-guard": "Idle",
       "motion-step": "Walk",
       "motion-rhythm": "Walk",
-      "motion-mobility": "Idle"
+      "motion-mobility": "Idle",
+      "exercise-squat": "Crouch idle"
     };
     exerciseType = (host.dataset.motion || "").startsWith("exercise-") ? host.dataset.motion.slice(9) : "";
     if (exerciseType) {
