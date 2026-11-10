@@ -54,13 +54,12 @@ function openExerciseDemo(key){
   if(!item)return;
   const mediaByName={
     "Agachamento":{
-      kind:"video",
-      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Squat_-_exercise_demonstration_video.webm",
-      mime:"video/webm",
-      credit:"FitnessScape",
-      license:"Creative Commons BY 3.0",
-      source:"https://commons.wikimedia.org/wiki/File:Squat_-_exercise_demonstration_video.webm",
-      note:"Plano horizontal amplo, com o corpo inteiro visível. O clipe demonstra agachamento com carga; observe o percurso geral, sem copiar a carga ou tentar reproduzir o equipamento."
+      kind:"embed",
+      src:"https://www.dvidshub.net/video/embed/517502",
+      credit:"U.S. Marine Corps · Capt. Joshua Pena / Cpl. Amber Jennings",
+      license:"Domínio público (DVIDS)",
+      source:"https://www.dvidshub.net/video/517502/body-weight-squat",
+      note:"Demonstração de agachamento com o peso do próprio corpo, sem barra ou halteres. O vídeo é hospedado pelo DVIDS."
     },
     "Flexão inclinada":{
       kind:"video",
@@ -92,8 +91,10 @@ function openExerciseDemo(key){
   const media=mediaByName[item[0]];
   const mediaMarkup=media
     ? media.kind==="video"
-      ? `<div class="demo-video-wrap"><video controls playsinline preload="metadata" ${media.src.includes("Squat_-_exercise")?"loop":""}><source src="${media.src}" type="${media.mime}">Seu navegador não conseguiu carregar este vídeo.</video></div>`
-      : `<div class="demo-video-wrap demo-gif-wrap"><img src="${media.src}" alt="Demonstração animada de elevação de panturrilha" loading="lazy"></div>`
+      ? `<div class="demo-video-wrap"><video controls playsinline preload="metadata"><source src="${media.src}" type="${media.mime}">Seu navegador não conseguiu carregar este vídeo.</video></div>`
+      : media.kind==="embed"
+        ? `<div class="demo-video-wrap demo-embed-wrap"><iframe src="${media.src}" title="Demonstração de agachamento sem carga — U.S. Marine Corps" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`
+        : `<div class="demo-video-wrap demo-gif-wrap"><img src="${media.src}" alt="Demonstração animada de elevação de panturrilha" loading="lazy"></div>`
     : `<div class="demo-placeholder"><span>GUIA DE MOVIMENTO</span><b>Vídeo ainda não disponível para este exercício</b><p>Não vamos mostrar um vídeo de outro movimento como se fosse este. Use as orientações escritas abaixo.</p></div>`;
   const steps=[
     "Prepare um espaço livre e confira se o apoio ou equipamento está firme.",
