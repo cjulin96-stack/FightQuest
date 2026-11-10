@@ -23,23 +23,29 @@ const squat: Clip = {
     const bend = (v: number) => v * depth;
     return {
       bones: {
-        Spine: [bend(13), 0, 0],
-        Spine1: [bend(5), 0, 0],
-        Spine2: [bend(3), 0, 0],
-        Neck: [bend(-5), 0, 0],
-        Head: [bend(-3), 0, 0],
-        LeftUpLeg: [bend(58), 0, bend(4)],
-        RightUpLeg: [bend(58), 0, bend(-4)],
-        LeftLeg: [bend(-92), 0, 0],
-        RightLeg: [bend(-92), 0, 0],
-        LeftFoot: [bend(30), 0, 0],
-        RightFoot: [bend(30), 0, 0],
-        LeftArm: [bend(18), 0, bend(8)],
-        RightArm: [bend(18), 0, bend(-8)],
-        LeftForeArm: [bend(42), 0, 0],
-        RightForeArm: [bend(42), 0, 0],
+        // Controlled forward torso lean, with the head kept close to neutral.
+        Spine: [bend(10), 0, 0],
+        Spine1: [bend(4), 0, 0],
+        Spine2: [bend(2), 0, 0],
+        Neck: [bend(-3), 0, 0],
+        Head: [bend(-2), 0, 0],
+        // Hip and knee flexion: positive thigh flexion, negative knee bend.
+        LeftUpLeg: [bend(76), 0, bend(2)],
+        RightUpLeg: [bend(76), 0, bend(-2)],
+        LeftLeg: [bend(-104), 0, 0],
+        RightLeg: [bend(-104), 0, 0],
+        // Keep the feet close to neutral instead of sharply pointing the toes.
+        LeftFoot: [bend(8), 0, 0],
+        RightFoot: [bend(8), 0, 0],
+        // Arms reach forward slightly for counterbalance.
+        LeftArm: [bend(30), 0, bend(5)],
+        RightArm: [bend(30), 0, bend(-5)],
+        LeftForeArm: [bend(48), 0, 0],
+        RightForeArm: [bend(48), 0, 0],
       },
-      root: { ground: true },
+      // Lower the pelvis with the squat and keep both feet planted.
+      root: { drop: 0.16 * depth, ground: true },
+      plant: { Left: 1, Right: 1 },
     };
   },
 };
