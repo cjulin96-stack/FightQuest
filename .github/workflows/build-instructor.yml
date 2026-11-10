@@ -60,4 +60,15 @@ jobs:
             exit 0
           fi
           git -C fightquest commit -m "Add generated 3D instructor model"
-          git -C fightquest push origin HEAD:main
+          # Rebase on the latest main because other app commits may land while
+          # the character generation (which downloads ~280 MB) is running.
+          for attempt in 1 2 3; do
+            git -C fightquest fetch origin main
+            git -C fightquest rebase origin/main
+            if git -C fightquest push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another commit; retrying ($attempt/3)."
+          done
+          echo "Could not publish the generated instructor after 3 attempts."
+          exit 1
