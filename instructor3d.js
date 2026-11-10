@@ -51,7 +51,7 @@ function makeStage(host){
     const scale=2.02/Math.max(size.y,0.01);
     model.scale.setScalar(scale);
     model.position.set(-center.x*scale,-box.min.y*scale,-center.z*scale);
-    model.rotation.y=-Math.PI/2; // source character faces +X; stage camera faces +Z
+    // Character orientation is handled by characterRoot below; avoid double rotation.
     model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material){o.material.roughness=Math.max(.55,o.material.roughness??.7);}}});
     characterRoot.add(model);
     model.traverse(o=>{if(o.isBone){const n=o.name.toLowerCase();state.bones.set(n,o);state.base.set(n,o.quaternion.clone());}});
@@ -62,7 +62,7 @@ function makeStage(host){
     state.clips={idle,walk};
     state.ready=true;
     host.querySelector(".fq3d-loading")?.remove();
-    host.querySelector(".fq3d-caption")?.textContent="INSTRUTOR 3D RIGADO · MODELO CC0";
+    const caption=host.querySelector(".fq3d-caption");if(caption)caption.textContent="INSTRUTOR 3D RIGADO · MODELO CC0";
     setMotion(state.motion,state);
   },undefined,()=>{
     const loading=host.querySelector(".fq3d-loading");
