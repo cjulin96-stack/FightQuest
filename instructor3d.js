@@ -76,14 +76,33 @@ async function mount(host) {
     scene.add(model);
     camera.position.set(0, 1.15, 3.1);
     camera.lookAt(0, 0.85, 0);
-    if (gltf.animations?.length) {
+    const motionNames = {
+      stance: "Idle",
+      guard: "Idle",
+      step: "Walk",
+      rhythm: "Walk",
+      mobility: "Idle",
+      "motion-stance": "Idle",
+      "motion-guard": "Idle",
+      "motion-step": "Walk",
+      "motion-rhythm": "Walk",
+      "motion-mobility": "Idle"
+    };
+    const requestedName = motionNames[host.dataset.motion] || "Idle";
+    const selectedClip = gltf.animations?.find(clip =>
+      clip.name.toLowerCase() === requestedName.toLowerCase()
+    ) || gltf.animations?.find(clip =>
+      clip.name.toLowerCase() === "idle"
+    ) || gltf.animations?.[0] || null;
+
+    if (selectedClip) {
       mixer = new THREE.AnimationMixer(model);
-      mixer.clipAction(gltf.animations[0]).play();
+      mixer.clipAction(selectedClip).play();
     }
     host.classList.add("is-ready");
-    setStatus(host, gltf.animations?.length
-      ? "Instrutor carregado. Animação disponível para validação."
-      : "Modelo carregado. A biblioteca de movimentos será conectada na próxima etapa.");
+    setStatus(host, selectedClip
+      ? `Instrutor 3D carregado · movimento: ${selectedClip.name}.`
+      : "Modelo humano carregado. As animações ainda não estão disponíveis neste arquivo.");
   } catch (error) {
     console.info("[FightQuest 3D] Modelo ainda não disponível:", error.message);
     setStatus(host, "Base do visualizador pronta. O arquivo do instrutor humano ainda precisa ser integrado; nenhum boneco provisório será exibido.");
