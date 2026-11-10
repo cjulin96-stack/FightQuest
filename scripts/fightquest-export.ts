@@ -42,11 +42,21 @@ const squat: Clip = {
       const b = lowered.bones[name] || a;
       // Keep the squat slightly above the generator's deepest crouch pose.
       const amount = depth * 0.78;
-      bones[name] = [
-        a[0] + (b[0] - a[0]) * amount,
-        a[1] + (b[1] - a[1]) * amount,
-        a[2] + (b[2] - a[2]) * amount,
-      ];
+      const lowerBody = /^(Left|Right)(UpLeg|Leg|Foot)$/.test(name);
+      // Keep the lower limbs aligned in the frontal plane. The source crouch
+      // clip adds mirrored Z-axis hip rotations, which pull the knees inward
+      // on this particular exported rig. Flex only the sagittal X axis.
+      bones[name] = lowerBody
+        ? [
+            a[0] + (b[0] - a[0]) * amount,
+            a[1],
+            a[2],
+          ]
+        : [
+            a[0] + (b[0] - a[0]) * amount,
+            a[1] + (b[1] - a[1]) * amount,
+            a[2] + (b[2] - a[2]) * amount,
+          ];
     }
     return {
       bones,
