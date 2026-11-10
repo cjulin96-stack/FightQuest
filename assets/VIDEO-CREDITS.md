@@ -1,32 +1,24 @@
 # FightQuest — créditos das demonstrações
 
-As mídias abaixo são carregadas diretamente de suas páginas de origem. O FightQuest não reivindica autoria sobre elas.
+As demonstrações são incorporadas diretamente dos provedores originais. O FightQuest não reivindica autoria sobre vídeos de terceiros. Os players oficiais respeitam as condições de incorporação de cada plataforma.
 
-## Agachamento livre
-- Vídeo: U.S. Marine Corps, disponibilizado pelo DVIDS
-- Página da mídia: https://www.dvidshub.net/video/517502/body-weight-squat
-- Crédito indicado pelo DVIDS: MAJ Joshua Pena / vídeo por Cpl. Amber Jennings
-- Licença indicada pelo DVIDS: domínio público
-- Nota: demonstra agachamento com o peso do próprio corpo, sem barra ou halteres. Incorporado pelo player oficial DVIDS.
+## Treino A
+- **Agachamento:** U.S. Marine Corps / DVIDS — https://www.dvidshub.net/video/517502/body-weight-squat — domínio público indicado pelo DVIDS.
+- **Flexão inclinada:** University of Maryland, Baltimore / URecFit — vídeo de flexão no chão usado apenas como referência de alinhamento — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
+- **Remada com mochila leve:** FitnessScape — https://commons.wikimedia.org/wiki/File:Bent-over_row_-_exercise_demonstration_video.webm — CC BY 3.0. O equipamento pode diferir do plano.
+- **Ponte de glúteos:** University of Maryland, Baltimore / URecFit — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
+- **Elevação de panturrilha:** Online Physio — https://onlinephysio.au/fast-ankle-sprain-relief-recover-fast/
+- **Dead bug:** University of Maryland, Baltimore / URecFit — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
 
+## Treino B
+- **Afundo alternado:** University of Maryland, Baltimore / URecFit — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
+- **Flexão com joelhos:** University of Maryland, Baltimore / URecFit — vídeo de flexão tradicional usado como referência visual, com aviso de que não é a variação ajoelhada — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
+- **Levantamento romeno leve:** University of Maryland, Baltimore / URecFit — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
+- **Rosca com mochila leve:** Keith Hanenian / Built Different — https://www.youtube.com/watch?v=aaAaUG9-E8E — demonstra rosca com halteres; não demonstra mochila.
+- **Bird dog:** University of Maryland, Baltimore / URecFit — https://www.umaryland.edu/urecfit/fitness/exercise-videos/
+- **Aperto de toalha:** Rehab My Patient — https://www.youtube.com/watch?v=DlAJTL1BRac
 
-## Flexão
-- Vídeo: Centers for Disease Control and Prevention (CDC)
-- Página da mídia: https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Push-ups.webm
-- Licença: domínio público nos Estados Unidos, por ser material produzido por órgão federal no exercício de suas funções.
-- Nota: o vídeo mostra flexão no chão; não é a mesma variação que flexão inclinada.
-
-## Remada curvada
-- Vídeo: FitnessScape
-- Página da mídia: https://commons.wikimedia.org/wiki/File:Bent-over_row_-_exercise_demonstration_video.webm
-- Licença: Creative Commons Attribution 3.0 Unported (CC BY 3.0)
-- Licença: https://creativecommons.org/licenses/by/3.0/
-- Nota: demonstração de remada curvada; o equipamento pode diferir da mochila leve sugerida no treino.
-
-## Elevação de panturrilha
-- Animação GIF: Everkinetic
-- Página da mídia: https://commons.wikimedia.org/wiki/File:Standing-calf-raises-2.gif
-- Licença: Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
-- Licença: https://creativecommons.org/licenses/by-sa/3.0/
-
-As mídias são incorporadas por seus endereços originais. Se algum arquivo deixar de estar disponível, o FightQuest deve mostrar o guia escrito em vez de substituí-lo por uma demonstração de outro exercício.
+## Observações
+- As referências que usam equipamento diferente estão identificadas no próprio guia do exercício. Não se deve copiar cargas ou equipamentos de vídeos.
+- Os vídeos são carregados no player incorporado do provedor; disponibilidade e reprodução dependem do serviço externo e do navegador.
+- A explicação muscular é educativa e descreve os principais grupos normalmente recrutados, não uma avaliação individual.
