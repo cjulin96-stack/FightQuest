@@ -19,16 +19,16 @@ function home(){const days=daysUntil(),pct=Math.min(100,state.completed.length/9
 <button class="mission-card" data-timer><span class="mission-icon orange">◷</span><span class="mission-label">FERRAMENTA</span><strong>Cronômetro</strong><small>Controle seu tempo</small><span class="mission-arrow">↗</span></button></div>
 <section class="quote-strip"><span>“</span><div><b>DISCIPLINA ANTES DA INTENSIDADE.</b><small>O objetivo é evoluir sem pular etapas.</small></div></section>`;}
 function strengthPage(){const checks=state.checks?.[activeWorkout]||[];return `
-<div class="page-hero"><span class="eyebrow">MÓDULO 01 / PREPARAÇÃO FÍSICA</span><h1 class="page-title">TREINO DE <em>FORÇA</em></h1><p>Escolha uma sessão e abra o guia de cada exercício. O estúdio 3D está sendo reconstruído para demonstrar cada movimento corretamente.</p></div>
+<div class="page-hero"><span class="eyebrow">MÓDULO 01 / PREPARAÇÃO FÍSICA</span><h1 class="page-title">TREINO DE <em>FORÇA</em></h1><p>Escolha uma sessão e abra o guia de cada exercício. Os movimentos com mídia validada mostram vídeos reais; os demais recebem orientação escrita, sem animações improvisadas.</p></div>
 <div class="workout-switch"><button class="workout-tab ${activeWorkout==="A"?"selected":""}" data-workout="A"><small>SESSÃO 01</small><b>TREINO A</b><span>Corpo todo</span></button><button class="workout-tab ${activeWorkout==="B"?"selected":""}" data-workout="B"><small>SESSÃO 02</small><b>TREINO B</b><span>Corpo todo</span></button></div>
-<div class="coach-banner"><div class="coach-badge">FQ<span>●</span></div><div><b>ESTÚDIO DE MOVIMENTO</b><small>Área visual em reconstrução · orientações de execução disponíveis.</small></div><span class="coach-live">● EM PREPARAÇÃO</span></div>
+<div class="coach-banner"><div class="coach-badge">▶<span>●</span></div><div><b>BIBLIOTECA DE DEMONSTRAÇÕES</b><small>Vídeos reais com autoria e licença identificadas.</small></div><span class="coach-live">● MÍDIA VALIDADA</span></div>
 <div class="session-summary"><div><span class="eyebrow">SESSÃO SELECIONADA</span><b>Treino ${activeWorkout}</b></div><div><strong>06</strong><small>EXERCÍCIOS</small></div><div><strong>02</strong><small>SÉRIES BASE</small></div></div>
 <div class="section-head"><div><span class="eyebrow">CHECKLIST DA SESSÃO</span><h2>Aprenda e execute</h2></div><span class="section-note" id="checkedCount">0 / 6</span></div>
 <div class="exercise-list">${plans[activeWorkout].map((x,i)=>`<article class="exercise-card coach-exercise"><input class="exercise-check" type="checkbox" data-exercise="${i}" ${checks.includes(i)?"checked":""}><span class="exercise-number">${String(i+1).padStart(2,"0")}</span><span class="exercise-info"><b>${x[0]}</b><strong>${x[1]}</strong><small>${x[2]}</small><button class="demo-link" type="button" data-demo="${activeWorkout}-${i}">▶ Ver demonstração</button></span><span class="exercise-done">✓</span></article>`).join("")}</div>
 <div class="session-footer"><div class="notice"><b>Treino responsável</b><br>Comece leve, aqueça antes e deixe 2–3 repetições de reserva. Interrompa se sentir dor, tontura ou mal-estar.</div><button class="btn block" id="finishWorkout">Finalizar sessão · +15 XP</button><button class="btn secondary block" data-timer>Iniciar cronômetro</button></div>`;}
 function muayPage(){const done=state.lessonDone||[];const levels=[["Base e equilíbrio","Entenda a base e distribua o peso com conforto.","INICIANTE"],["Guarda e postura","Estude a posição defensiva e a atenção corporal.","INICIANTE"],["Deslocamento básico","Observe passos curtos e equilíbrio ao caminhar.","FUNDAMENTOS"],["Coordenação e respiração","Combine ritmo leve, coordenação e respiração natural.","FUNDAMENTOS"],["Mobilidade e aquecimento","Prepare articulações e recupere sem forçar amplitudes.","PREPARAÇÃO"]];return `
 <div class="page-hero"><span class="eyebrow red-eyebrow">FIGHTQUEST / ACADEMIA GUIADA</span><h1 class="page-title">MUAY <em>THAI</em></h1><p>Trilha guiada de postura, equilíbrio, mobilidade e coordenação. As demonstrações 3D estão em reconstrução.</p></div>
-<section class="coach-stage"><div class="coach-stage-head"><span><i></i> INSTRUTOR FIGHTQUEST</span><b>TRILHA ${done.length}/5</b></div><div class="coach-avatar-scene"><div class="avatar-halo"></div><div class="avatar-floor"></div>${coachAvatar("stance","Muay Thai: base neutra")}</div><div class="coach-stage-foot"><b>DEMONSTRAÇÃO INTERATIVA</b><span>Escolha uma aula abaixo para ver o movimento correspondente.</span></div><div class="progress-track red-track"><div class="progress-fill red-fill" style="width:${done.length/5*100}%"></div></div></section>
+<section class="study-stage"><div class="coach-stage-head"><span><i></i> CENTRAL DE FUNDAMENTOS</span><b>TRILHA ${done.length}/5</b></div><div class="study-stage-body"><div class="study-icon">🥊</div><div><b>Aprendizado guiado</b><p>Postura, equilíbrio, mobilidade e coordenação. As aulas priorizam estudo e movimentos leves, sem simulação de combate.</p></div></div><div class="progress-track red-track"><div class="progress-fill red-fill" style="width:${done.length/5*100}%"></div></div></section>
 <div class="level-heading"><div><span class="eyebrow red-eyebrow">AULAS COM DEMONSTRAÇÃO</span><h2>Aprenda movimento por movimento</h2></div><span class="level-total">5 ETAPAS</span></div>
 <div class="level-path">${levels.map((l,i)=>{const isDone=done.includes(i),open=i===0||done.includes(i-1);return `<article class="level-card ${isDone?"level-done":""} ${!open?"level-locked":""}"><div class="level-number">${isDone?"✓":"0"+(i+1)}</div><div class="level-copy"><span>${l[2]} · AULA ${i+1}</span><b>${l[0]}</b><small>${l[1]}</small></div><button class="level-open" data-level="${i}" ${!open?"disabled":""}>${isDone?"Rever":"Assistir"} ▶</button></article>`;}).join("")}</div>
 <div class="notice"><b>Aprendizado seguro</b><br>As aulas iniciais demonstram postura, equilíbrio, deslocamento leve e coordenação. Golpes de impacto, saco e sparring exigem professor qualificado e equipamento adequado.</div>`;}
@@ -47,9 +47,69 @@ function coachAvatar(motion,label){
     </div>
   </div>`;
 }
-function openLevel(i){const data=[["Base e equilíbrio","motion-stance","Observe o instrutor de frente e de perfil. Repare na posição confortável dos pés, no alinhamento do tronco e na distribuição equilibrada do peso.","A demonstração alterna entre vista frontal e lateral. Estude primeiro; qualquer prática deve ser leve, em espaço livre e sem forçar articulações."],["Guarda e postura","motion-guard","Observe como o instrutor mantém as mãos em posição protetora, os ombros relaxados e a atenção à frente.","Esta aula é uma explicação visual de postura defensiva, não um treino de confronto. Procure um professor para corrigir a técnica presencialmente."],["Deslocamento básico","motion-step","Observe o instrutor transferindo o peso e dando passos pequenos, mantendo a estabilidade.","A animação mostra o princípio do deslocamento. Se praticar, caminhe devagar em espaço livre, sem acelerar ou cruzar os pés."],["Coordenação e respiração","motion-rhythm","Observe a alternância suave de braços e pernas e a respiração natural durante o movimento.","Use a animação para entender ritmo e coordenação. Faça apenas mobilidade confortável e pare se sentir tontura ou desconforto."],["Mobilidade e aquecimento","motion-mobility","Observe movimentos articulares leves e controlados antes de uma sessão.","A demonstração é educativa. Não force alongamentos nem tente reproduzir amplitudes extremas."]][i];if(!data)return;const done=(state.lessonDone||[]).includes(i),m=document.createElement("div");m.className="modal-backdrop";m.innerHTML=`<section class="lesson-modal coach-lesson"><button class="modal-close" id="closeLevel" aria-label="Fechar">×</button><span class="eyebrow red-eyebrow">INSTRUTOR VIRTUAL / AULA 0${i+1}</span><div class="demo-screen">${coachAvatar(data[1],data[0])}<span class="demo-screen-tag">VISUALIZADOR 3D</span></div><h2>${data[0]}</h2><div class="demo-caption"><b>O QUE OBSERVAR</b><p>${data[2]}</p></div><div class="lesson-detail"><b>ORIENTAÇÃO</b><p>${data[3]}</p></div><button class="btn block" id="completeLevel">${done?"Etapa já concluída ✓":"Concluir aula estudada · +5 XP"}</button></section>`;document.body.append(m);const close=()=>m.remove();m.querySelector("#closeLevel").onclick=close;m.onclick=e=>{if(e.target===m)close();};m.querySelector("#completeLevel").onclick=()=>{if(!done){state.lessonDone=state.lessonDone||[];state.lessonDone.push(i);state.xp+=5;state.completed.push(Date.now());save();toast("Aula registrada! +5 XP");}close();page("muaythai");};}
+function openLevel(i){const data=[["Base e equilíbrio","motion-stance","Observe o instrutor de frente e de perfil. Repare na posição confortável dos pés, no alinhamento do tronco e na distribuição equilibrada do peso.","A demonstração alterna entre vista frontal e lateral. Estude primeiro; qualquer prática deve ser leve, em espaço livre e sem forçar articulações."],["Guarda e postura","motion-guard","Observe como o instrutor mantém as mãos em posição protetora, os ombros relaxados e a atenção à frente.","Esta aula é uma explicação visual de postura defensiva, não um treino de confronto. Procure um professor para corrigir a técnica presencialmente."],["Deslocamento básico","motion-step","Observe o instrutor transferindo o peso e dando passos pequenos, mantendo a estabilidade.","A animação mostra o princípio do deslocamento. Se praticar, caminhe devagar em espaço livre, sem acelerar ou cruzar os pés."],["Coordenação e respiração","motion-rhythm","Observe a alternância suave de braços e pernas e a respiração natural durante o movimento.","Use a animação para entender ritmo e coordenação. Faça apenas mobilidade confortável e pare se sentir tontura ou desconforto."],["Mobilidade e aquecimento","motion-mobility","Observe movimentos articulares leves e controlados antes de uma sessão.","A demonstração é educativa. Não force alongamentos nem tente reproduzir amplitudes extremas."]][i];if(!data)return;const done=(state.lessonDone||[]).includes(i),m=document.createElement("div");m.className="modal-backdrop";m.innerHTML=`<section class="lesson-modal coach-lesson"><button class="modal-close" id="closeLevel" aria-label="Fechar">×</button><span class="eyebrow red-eyebrow">INSTRUTOR VIRTUAL / AULA 0${i+1}</span><div class="lesson-visual-card"><span>FIGHTQUEST / FUNDAMENTOS</span><strong>${data[0]}</strong><p>Guia de estudo · observação e mobilidade leve</p></div><h2>${data[0]}</h2><div class="demo-caption"><b>O QUE OBSERVAR</b><p>${data[2]}</p></div><div class="lesson-detail"><b>ORIENTAÇÃO</b><p>${data[3]}</p></div><button class="btn block" id="completeLevel">${done?"Etapa já concluída ✓":"Concluir aula estudada · +5 XP"}</button></section>`;document.body.append(m);const close=()=>m.remove();m.querySelector("#closeLevel").onclick=close;m.onclick=e=>{if(e.target===m)close();};m.querySelector("#completeLevel").onclick=()=>{if(!done){state.lessonDone=state.lessonDone||[];state.lessonDone.push(i);state.xp+=5;state.completed.push(Date.now());save();toast("Aula registrada! +5 XP");}close();page("muaythai");};}
 function exerciseMotion(group,index){const name=plans[group][index]?.[0]||"";const map={"Agachamento":"squat","Flexão inclinada":"pushup","Remada com mochila leve":"row","Ponte de glúteos":"glute-bridge","Elevação de panturrilha":"calf-raise","Dead bug":"dead-bug","Afundo alternado":"lunge","Flexão com joelhos":"pushup","Levantamento romeno leve":"hinge","Rosca com mochila leve":"curl","Bird dog":"bird-dog","Aperto de toalha":"isometric"};return "exercise-"+(map[name]||"squat");}
-function openExerciseDemo(key){const [group,index]=key.split("-"),item=plans[group][+index];if(!item)return;const steps=["Antes de começar: organize o espaço, use uma superfície estável e faça algumas repetições leves apenas se estiver confortável.","Durante o exercício: priorize controle, respiração natural e uma amplitude confortável. Não tente acelerar nem aumentar a carga para compensar.","Ao terminar: retorne à posição inicial com calma e faça uma pausa. Interrompa se sentir dor, tontura ou mal-estar."];const m=document.createElement("div");m.className="modal-backdrop";m.innerHTML=`<section class="lesson-modal coach-lesson"><button class="modal-close" id="closeDemo" aria-label="Fechar">×</button><span class="eyebrow">GUIA DE MOVIMENTO / MUSCULAÇÃO</span><div class="demo-screen">${coachAvatar(exerciseMotion(group,+index),item[0])}</div><h2>${item[0]}</h2><div class="demo-rep-count"><b>${item[1]}</b><span>REFERÊNCIA INICIAL · AJUSTE AO SEU CONFORTO</span></div><div class="demo-steps">${steps.map((s,i)=>`<div><span>0${i+1}</span><p>${s}</p></div>`).join("")}</div><div class="lesson-detail"><b>PONTO DE ATENÇÃO</b><p>${item[2]} Peça a um profissional para conferir sua execução antes de aumentar a dificuldade.</p></div></section>`;document.body.append(m);m.querySelector("#closeDemo").onclick=()=>m.remove();m.onclick=e=>{if(e.target===m)m.remove();};}
+function openExerciseDemo(key){
+  const [group,index]=key.split("-"),item=plans[group][+index];
+  if(!item)return;
+  const mediaByName={
+    "Agachamento":{
+      kind:"video",
+      src:"https://videos.pexels.com/video-files/6525515/6525515-hd_1080_1920_30fps.mp4",
+      mime:"video/mp4",
+      credit:"Polina Tankilevitch · Pexels",
+      license:"Licença Pexels",
+      source:"https://www.pexels.com/video/young-woman-exercising-6525519/",
+      note:"Demonstração de agachamento livre. Use somente uma amplitude confortável e mantenha o movimento controlado."
+    },
+    "Flexão inclinada":{
+      kind:"video",
+      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Muscle_Strengthening_at_Home_-_Push-ups.webm",
+      mime:"video/webm",
+      credit:"Centers for Disease Control and Prevention (CDC)",
+      license:"Domínio público nos EUA",
+      source:"https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Push-ups.webm",
+      note:"O vídeo mostra flexão no chão, não a versão inclinada. Para a variação inclinada, use apenas um apoio firme e estável e reduza a dificuldade."
+    },
+    "Remada com mochila leve":{
+      kind:"video",
+      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Bent-over_row_-_exercise_demonstration_video.webm",
+      mime:"video/webm",
+      credit:"FitnessScape",
+      license:"Creative Commons BY 3.0",
+      source:"https://commons.wikimedia.org/wiki/File:Bent-over_row_-_exercise_demonstration_video.webm",
+      note:"O vídeo demonstra a trajetória da remada curvada com outro equipamento. No plano FightQuest, a referência é uma mochila leve; não copie cargas do vídeo."
+    },
+    "Elevação de panturrilha":{
+      kind:"image",
+      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Standing-calf-raises-2.gif",
+      credit:"Everkinetic",
+      license:"Creative Commons BY-SA 3.0",
+      source:"https://commons.wikimedia.org/wiki/File:Standing-calf-raises-2.gif",
+      note:"Demonstração animada. Use apoio estável se precisar e faça apenas uma amplitude confortável."
+    }
+  };
+  const media=mediaByName[item[0]];
+  const mediaMarkup=media
+    ? media.kind==="video"
+      ? `<div class="demo-video-wrap"><video controls playsinline preload="metadata" ${media.src.includes("6525515")?"loop":""}><source src="${media.src}" type="${media.mime}">Seu navegador não conseguiu carregar este vídeo.</video></div>`
+      : `<div class="demo-video-wrap demo-gif-wrap"><img src="${media.src}" alt="Demonstração animada de elevação de panturrilha" loading="lazy"></div>`
+    : `<div class="demo-placeholder"><span>GUIA DE MOVIMENTO</span><b>Vídeo ainda não disponível para este exercício</b><p>Não vamos mostrar um vídeo de outro movimento como se fosse este. Use as orientações escritas abaixo.</p></div>`;
+  const steps=[
+    "Prepare um espaço livre e confira se o apoio ou equipamento está firme.",
+    "Faça o movimento devagar, respirando naturalmente e sem forçar a amplitude.",
+    "Pare se sentir dor, tontura ou mal-estar. A técnica deve ser confortável e controlada."
+  ];
+  const m=document.createElement("div");
+  m.className="modal-backdrop";
+  m.innerHTML=`<section class="lesson-modal coach-lesson demo-video-modal"><button class="modal-close" id="closeDemo" aria-label="Fechar">×</button><span class="eyebrow">GUIA DE MOVIMENTO / MUSCULAÇÃO</span><h2>${item[0]}</h2><div class="demo-rep-count"><b>${item[1]}</b><span>REFERÊNCIA INICIAL · AJUSTE AO CONFORTO</span></div>${mediaMarkup}<div class="demo-media-credit">${media?`Mídia: <b>${media.credit}</b> · ${media.license} · <a href="${media.source}" target="_blank" rel="noopener noreferrer">Ver fonte</a>`:"Sem mídia validada para este exercício."}</div><div class="demo-caption"><b>OBSERVAÇÃO</b><p>${media?media.note:item[2]}</p></div><div class="demo-steps">${steps.map((s,i)=>`<div><span>0${i+1}</span><p>${s}</p></div>`).join("")}</div><div class="lesson-detail"><b>LEMBRETE</b><p>${item[2]} Se tiver dúvidas sobre a execução, peça orientação presencial a um profissional qualificado.</p></div></section>`;
+  document.body.append(m);
+  const close=()=>{m.remove();document.removeEventListener("keydown",onKey);};
+  const onKey=e=>{if(e.key==="Escape")close();};
+  document.addEventListener("keydown",onKey);
+  m.querySelector("#closeDemo").onclick=close;
+  m.onclick=e=>{if(e.target===m)close();};
+}
 function progressPage(){const total=state.sessions.length, strength=state.sessions.filter(s=>s.name.includes("Força")).length, thai=state.sessions.filter(s=>s.name.includes("Muay")).length;return `
 <div class="page-hero"><span class="eyebrow">MÓDULO 03 / DADOS DO ATLETA</span><h1 class="page-title">SEU <em>DESEMPENHO</em></h1><p>Acompanhe o que você registrou. Cada sessão concluída soma experiência.</p></div>
 <div class="stats-grid"><div class="stat-card"><span>XP TOTAL</span><b>${state.xp}</b><small>Experiência</small></div><div class="stat-card"><span>NÍVEL</span><b>${1+Math.floor(state.xp/100)}</b><small>${100-state.xp%100} XP para subir</small></div><div class="stat-card"><span>SESSÕES</span><b>${total}</b><small>Registros totais</small></div><div class="stat-card"><span>DIAS MARCADOS</span><b>${Math.min(90,state.completed.length)}</b><small>Do desafio de 90 dias</small></div></div>
