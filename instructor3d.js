@@ -2,202 +2,163 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
-const MODEL_URL = new URL("./assets/instructor.glb?v=20261110-male-instructor-2", import.meta.url).href;
+const MODEL_URL = new URL("./assets/instructor.glb?v=20261110-male-instructor-2", import.meta.url).href;\nconst SQUAT_MODEL_URL = new URL("./assets/quaternius/Regular_Male_FullBody.gltf?v=20261110-rigged-squat", import.meta.url).href;
 
 function setStatus(host, message) {
   const status = host.querySelector(".fq-3d-status");
   if (status) status.textContent = message;
 }
 
-// A compact game-style humanoid for the squat lesson. Each limb is a rigid
-// segment joined at explicit world-space points: no skin deformation or
-// guessed local knee rotations, so the knees stay aligned with the feet.
-function createSquatHumanoid(scene) {
-  const group = new THREE.Group();
-  scene.add(group);
-
-  const shirt = new THREE.MeshStandardMaterial({ color: 0x25a8b8, roughness: 0.72 });
-  const pants = new THREE.MeshStandardMaterial({ color: 0x24334a, roughness: 0.82 });
-  const skin = new THREE.MeshStandardMaterial({ color: 0xe5a879, roughness: 0.78 });
-  const shoes = new THREE.MeshStandardMaterial({ color: 0xe9edf2, roughness: 0.65 });
-  const sole = new THREE.MeshStandardMaterial({ color: 0x101a29, roughness: 0.88 });
-  const hair = new THREE.MeshStandardMaterial({ color: 0x182333, roughness: 0.9 });
-  const eyes = new THREE.MeshStandardMaterial({ color: 0x17202d, roughness: 0.45 });
-  const accent = new THREE.MeshStandardMaterial({ color: 0xffc857, roughness: 0.55, metalness: 0.12 });
-  const jointGeometry = new THREE.SphereGeometry(1, 24, 18);
-  const up = new THREE.Vector3(0, 1, 0);
-  const parts = {};
-
-  function segment(name, radius, material) {
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.92, radius, 1, 14), material);
-    mesh.castShadow = true;
-    group.add(mesh);
-    parts[name] = mesh;
-    return mesh;
+// Drive a fully skinned humanoid with a two-link IK squat. The foot bones stay
+// planted while the thigh and calf bones follow a forward knee-bend path.
+function createSquatRigged(model) {
+  const getBone = (name) => model.getObjectByName(name);
+  const pelvis = getBone("pelvis");
+  const spine1 = getBone("spine_01");
+  const spine2 = getBone("spine_02");
+  const leftThigh = getBone("thigh_l");
+  const rightThigh = getBone("thigh_r");
+  const leftCalf = getBone("calf_l");
+  const rightCalf = getBone("calf_r");
+  const leftFoot = getBone("foot_l");
+  const rightFoot = getBone("foot_r");
+  const required = [pelvis, leftThigh, rightThigh, leftCalf, rightCalf, leftFoot, rightFoot];
+  if (required.some((bone) => !bone)) {
+    throw new Error("O esqueleto do instrutor não contém as articulações necessárias para o agachamento.");
   }
-  function joint(name, radius, material) {
-    const mesh = new THREE.Mesh(jointGeometry, material);
-    mesh.scale.setScalar(radius);
-    mesh.castShadow = true;
-    group.add(mesh);
-    parts[name] = mesh;
-    return mesh;
-  }
-  function between(mesh, a, b) {
-    const direction = b.clone().sub(a);
-    const length = Math.max(0.001, direction.length());
-    mesh.position.copy(a).add(b).multiplyScalar(0.5);
-    mesh.scale.set(1, length, 1);
-    mesh.quaternion.setFromUnitVectors(up, direction.normalize());
-  }
-  function at(mesh, point) { mesh.position.copy(point); }
 
-  segment("torso", 0.17, shirt);
-  segment("neck", 0.055, skin);
-  joint("head", 0.125, skin);
-  joint("hips", 0.16, pants);
-  segment("leftThigh", 0.095, pants);
-  segment("rightThigh", 0.095, pants);
-  segment("leftShin", 0.075, pants);
-  segment("rightShin", 0.075, pants);
-  segment("leftUpperArm", 0.065, shirt);
-  segment("rightUpperArm", 0.065, shirt);
-  segment("leftForearm", 0.052, skin);
-  segment("rightForearm", 0.052, skin);
-  ["leftShoulder","rightShoulder","leftElbow","rightElbow","leftKnee","rightKnee","leftAnkle","rightAnkle","leftHand","rightHand"].forEach((name) => {
-    joint(name, name.includes("Knee") ? 0.078 : 0.06, name.includes("Shoulder") ? shirt : skin);
-  });
-  ["leftFoot","rightFoot"].forEach((name) => {
-    const soleMesh = new THREE.Mesh(new THREE.BoxGeometry(0.155, 0.035, 0.27), sole);
-    soleMesh.castShadow = true;
-    group.add(soleMesh);
-    parts[name + "Sole"] = soleMesh;
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.09, 0.26), shoes);
-    mesh.castShadow = true;
-    group.add(mesh);
-    parts[name] = mesh;
-  });
+  model.updateMatrixWorld(true);
+  const worldPosition = (object) => object.getWorldPosition(new THREE.Vector3());
+  const worldQuaternion = (object) => object.getWorldQuaternion(new THREE.Quaternion());
+  const basePelvisWorld = worldPosition(pelvis);
+  const basePelvisLocal = pelvis.position.clone();
+  const basePelvisQuaternion = pelvis.quaternion.clone();
+  const pelvisParent = pelvis.parent;
+  const baseSpine1 = spine1?.quaternion.clone();
+  const baseSpine2 = spine2?.quaternion.clone();
 
-  // Small design details turn the primitive rig into a deliberate game avatar.
-  function detail(name, geometry, material) {
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.castShadow = true;
-    group.add(mesh);
-    parts[name] = mesh;
-    return mesh;
+  const origin = model.localToWorld(new THREE.Vector3(0, 0, 0));
+  const forward = model.localToWorld(new THREE.Vector3(0, 0, 1)).sub(origin).normalize();
+
+  function captureLeg(thigh, calf, foot) {
+    const thighPosition = worldPosition(thigh);
+    const calfPosition = worldPosition(calf);
+    const footPosition = worldPosition(foot);
+    return {
+      thigh,
+      calf,
+      foot,
+      thighDirection: calfPosition.clone().sub(thighPosition).normalize(),
+      calfDirection: footPosition.clone().sub(calfPosition).normalize(),
+      thighWorldQuaternion: worldQuaternion(thigh),
+      calfWorldQuaternion: worldQuaternion(calf),
+      footWorldQuaternion: worldQuaternion(foot),
+      footWorldPosition: footPosition,
+      upperLength: thighPosition.distanceTo(calfPosition),
+      lowerLength: calfPosition.distanceTo(footPosition)
+    };
   }
-  detail("hairCap", new THREE.SphereGeometry(1, 24, 16), hair).scale.set(0.137, 0.09, 0.132);
-  detail("hairBack", new THREE.SphereGeometry(1, 20, 14), hair).scale.set(0.13, 0.13, 0.105);
-  detail("leftEye", new THREE.SphereGeometry(0.014, 12, 10), eyes);
-  detail("rightEye", new THREE.SphereGeometry(0.014, 12, 10), eyes);
-  detail("nose", new THREE.SphereGeometry(0.018, 12, 10), skin);
-  detail("shirtMark", new THREE.SphereGeometry(0.043, 16, 12), accent).scale.set(1, 1.15, 0.25);
-  detail("waistBand", new THREE.BoxGeometry(0.29, 0.045, 0.19), accent);
-  detail("leftBrow", new THREE.BoxGeometry(0.035, 0.008, 0.012), hair);
-  detail("rightBrow", new THREE.BoxGeometry(0.035, 0.008, 0.012), hair);
 
-  const v = (x, y, z) => new THREE.Vector3(x, y, z);
-  const smooth = (x) => {
-    const n = THREE.MathUtils.clamp(x, 0, 1);
+  const legs = [
+    captureLeg(leftThigh, leftCalf, leftFoot),
+    captureLeg(rightThigh, rightCalf, rightFoot)
+  ];
+
+  function smooth(value) {
+    const n = THREE.MathUtils.clamp(value, 0, 1);
     return n * n * (3 - 2 * n);
-  };
+  }
+
+  function solveKnee(hip, ankle, upperLength, lowerLength) {
+    const delta = ankle.clone().sub(hip);
+    const rawDistance = delta.length();
+    const minDistance = Math.abs(upperLength - lowerLength) + 0.0001;
+    const maxDistance = upperLength + lowerLength - 0.0001;
+    const distance = THREE.MathUtils.clamp(rawDistance, minDistance, maxDistance);
+    const direction = delta.normalize();
+    const along = (upperLength * upperLength - lowerLength * lowerLength + distance * distance) / (2 * distance);
+    const height = Math.sqrt(Math.max(0, upperLength * upperLength - along * along));
+    const bendDirection = forward.clone().addScaledVector(direction, -forward.dot(direction));
+    if (bendDirection.lengthSq() < 0.000001) bendDirection.set(0, 0, 1);
+    bendDirection.normalize();
+    return hip.clone().addScaledVector(direction, along).addScaledVector(bendDirection, height);
+  }
+
+  function setWorldQuaternion(bone, targetWorldQuaternion) {
+    const parentWorld = bone.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
+    bone.quaternion.copy(parentWorld.multiply(targetWorldQuaternion.clone()));
+    bone.updateMatrix();
+  }
+
+  function aimBone(bone, restDirection, restWorldQuaternion, targetDirection) {
+    const delta = new THREE.Quaternion().setFromUnitVectors(
+      restDirection,
+      targetDirection.clone().normalize()
+    );
+    const targetWorldQuaternion = delta.multiply(restWorldQuaternion.clone());
+    setWorldQuaternion(bone, targetWorldQuaternion);
+  }
 
   function update(elapsed) {
-    const cycle = elapsed % 3.2;
-    const depth = cycle < 1.15
-      ? smooth(cycle / 1.15)
-      : cycle < 1.48
+    const cycle = elapsed % 3.4;
+    const depth = cycle < 1.2
+      ? smooth(cycle / 1.2)
+      : cycle < 1.55
         ? 1
-        : 1 - smooth((cycle - 1.48) / (3.2 - 1.48));
+        : 1 - smooth((cycle - 1.55) / (3.4 - 1.55));
 
-    const hipY = 0.94 - 0.32 * depth;
-    const hipZ = -0.02 - 0.10 * depth;
-    const hipL = v(-0.16, hipY, hipZ);
-    const hipR = v( 0.16, hipY, hipZ);
-    const ankleL = v(-0.16, 0.135, 0.015);
-    const ankleR = v( 0.16, 0.135, 0.015);
+    pelvis.quaternion.copy(basePelvisQuaternion);
+    const legLength = legs[0].upperLength + legs[0].lowerLength;
+    const targetPelvisWorld = basePelvisWorld.clone().add(new THREE.Vector3(
+      0,
+      -legLength * 0.22 * depth,
+      -legLength * 0.08 * depth
+    ));
+    pelvis.position.copy(pelvisParent.worldToLocal(targetPelvisWorld.clone()));
 
-    // Two-link leg solution with fixed thigh/shin lengths. The bend direction
-    // is always forward, never toward the body's centre line.
-    function solveKnee(hip, ankle) {
-      const dy = ankle.y - hip.y;
-      const dz = ankle.z - hip.z;
-      const distance = Math.max(0.001, Math.hypot(dy, dz));
-      const length = 0.415;
-      const along = Math.min(length, (distance * distance) / (2 * distance));
-      const height = Math.sqrt(Math.max(0, length * length - along * along));
-      const uy = dy / distance;
-      const uz = dz / distance;
-      return v(
-        hip.x,
-        hip.y + along * uy + height * uz,
-        hip.z + along * uz - height * uy
+    if (spine1 && baseSpine1) {
+      spine1.quaternion.copy(baseSpine1).multiply(
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), 0.09 * depth)
       );
     }
-    const kneeL = solveKnee(hipL, ankleL);
-    const kneeR = solveKnee(hipR, ankleR);
+    if (spine2 && baseSpine2) {
+      spine2.quaternion.copy(baseSpine2).multiply(
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), 0.035 * depth)
+      );
+    }
 
-    const shoulderY = hipY + 0.46 - 0.035 * depth;
-    const shoulderZ = hipZ + 0.045 + 0.105 * depth;
-    const shoulderL = v(-0.235, shoulderY, shoulderZ);
-    const shoulderR = v( 0.235, shoulderY, shoulderZ);
-    const elbowL = v(-0.285, shoulderY - 0.16, shoulderZ + 0.18);
-    const elbowR = v( 0.285, shoulderY - 0.16, shoulderZ + 0.18);
-    const handL = v(-0.255, shoulderY - 0.27, shoulderZ + 0.36);
-    const handR = v( 0.255, shoulderY - 0.27, shoulderZ + 0.36);
-    const chest = v(0, shoulderY, shoulderZ - 0.015);
-    const head = v(0, shoulderY + 0.20, shoulderZ - 0.015);
+    model.updateMatrixWorld(true);
+    for (const leg of legs) {
+      const hip = worldPosition(leg.thigh);
+      const ankle = leg.footWorldPosition.clone();
+      const knee = solveKnee(hip, ankle, leg.upperLength, leg.lowerLength);
 
-    at(parts.hips, v(0, hipY, hipZ));
-    between(parts.torso, v(0, hipY + 0.04, hipZ), chest);
-    between(parts.neck, v(0, shoulderY - 0.025, shoulderZ), head.clone().add(v(0, -0.075, 0)));
-    at(parts.head, head);
-    at(parts.hairCap, head.clone().add(v(0, 0.075, -0.005)));
-    at(parts.hairBack, head.clone().add(v(0, -0.015, -0.075)));
-    at(parts.leftEye, head.clone().add(v(-0.048, 0.012, 0.116)));
-    at(parts.rightEye, head.clone().add(v(0.048, 0.012, 0.116)));
-    at(parts.leftBrow, head.clone().add(v(-0.048, 0.035, 0.119)));
-    at(parts.rightBrow, head.clone().add(v(0.048, 0.035, 0.119)));
-    at(parts.nose, head.clone().add(v(0, -0.018, 0.13)));
-    at(parts.shirtMark, chest.clone().add(v(0.075, -0.04, 0.145)));
-    at(parts.waistBand, v(0, hipY + 0.055, hipZ + 0.015));
-    at(parts.leftShoulder, shoulderL); at(parts.rightShoulder, shoulderR);
-    at(parts.leftElbow, elbowL); at(parts.rightElbow, elbowR);
-    at(parts.leftKnee, kneeL); at(parts.rightKnee, kneeR);
-    at(parts.leftAnkle, ankleL); at(parts.rightAnkle, ankleR);
-    at(parts.leftHand, handL); at(parts.rightHand, handR);
+      aimBone(leg.thigh, leg.thighDirection, leg.thighWorldQuaternion, knee.clone().sub(hip));
+      model.updateMatrixWorld(true);
 
-    between(parts.leftThigh, hipL, kneeL);
-    between(parts.rightThigh, hipR, kneeR);
-    between(parts.leftShin, kneeL, ankleL);
-    between(parts.rightShin, kneeR, ankleR);
-    between(parts.leftUpperArm, shoulderL, elbowL);
-    between(parts.rightUpperArm, shoulderR, elbowR);
-    between(parts.leftForearm, elbowL, handL);
-    between(parts.rightForearm, elbowR, handR);
+      aimBone(leg.calf, leg.calfDirection, leg.calfWorldQuaternion, ankle.clone().sub(knee));
+      model.updateMatrixWorld(true);
 
-    parts.leftFoot.position.set(-0.16, 0.092, 0.105);
-    parts.rightFoot.position.set(0.16, 0.092, 0.105);
-    parts.leftFootSole.position.set(-0.16, 0.035, 0.105);
-    parts.rightFootSole.position.set(0.16, 0.035, 0.105);
+      setWorldQuaternion(leg.foot, leg.footWorldQuaternion);
+      model.updateMatrixWorld(true);
+    }
+  }
+
+  function dispose() {
+    pelvis.position.copy(basePelvisLocal);
+    pelvis.quaternion.copy(basePelvisQuaternion);
+    if (spine1 && baseSpine1) spine1.quaternion.copy(baseSpine1);
+    if (spine2 && baseSpine2) spine2.quaternion.copy(baseSpine2);
+    for (const leg of legs) {
+      leg.thigh.quaternion.copy(leg.thighWorldQuaternion);
+      leg.calf.quaternion.copy(leg.calfWorldQuaternion);
+      leg.foot.quaternion.copy(leg.footWorldQuaternion);
+    }
+    model.updateMatrixWorld(true);
   }
 
   update(0);
-  return {
-    group,
-    update,
-    dispose() {
-      group.traverse((object) => {
-        if (!object.isMesh) return;
-        object.geometry?.dispose();
-        if (Array.isArray(object.material)) object.material.forEach((m) => m.dispose());
-        else object.material?.dispose();
-      });
-      scene.remove(group);
-      jointGeometry.dispose();
-      [shirt, pants, skin, shoes, sole, hair, eyes, accent].forEach((material) => material.dispose());
-    }
-  };
+  return { update, dispose };
 }
 
 async function mount(host) {
@@ -266,11 +227,28 @@ async function mount(host) {
 
   try {
     if (exerciseType === "squat") {
-      squatRig = createSquatHumanoid(scene);
-      camera.position.set(0, 1.18, 3.25);
-      camera.lookAt(0, 0.82, 0);
+      const gltf = await new GLTFLoader().loadAsync(SQUAT_MODEL_URL);
+      model = gltf.scene;
+      const bounds = new THREE.Box3().setFromObject(model);
+      const size = bounds.getSize(new THREE.Vector3());
+      const center = bounds.getCenter(new THREE.Vector3());
+      if (!Number.isFinite(size.y) || size.y < 0.5 || size.y > 5) {
+        throw new Error("O modelo humano não passou na validação de escala.");
+      }
+      const fitScale = 1.65 / size.y;
+      model.scale.setScalar(fitScale);
+      model.position.set(
+        -center.x * fitScale,
+        -bounds.min.y * fitScale,
+        -center.z * fitScale
+      );
+      scene.add(model);
+      model.updateMatrixWorld(true);
+      squatRig = createSquatRigged(model);
+      camera.position.set(0, 1.2, 3.35);
+      camera.lookAt(0, 0.83, 0);
       host.classList.add("is-ready");
-      setStatus(host, "Humanoide 3D carregado · agachamento com joelhos alinhados e pés apoiados.");
+      setStatus(host, "Instrutor 3D carregado · agachamento com joelhos flexionando e pés apoiados.");
     } else {
     const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
     model = gltf.scene;
