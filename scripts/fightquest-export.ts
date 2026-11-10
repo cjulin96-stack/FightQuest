@@ -7,7 +7,7 @@ import { clipById } from '../src/core/anim/clips';
 import { planExport, runExport } from '../src/export';
 
 // Export only general fitness / locomotion clips for the FightQuest instructor.
-const clipIds = ['idle', 'walk', 'run', 'jump'];
+const clipIds = ['idle', 'crouch', 'walk', 'run', 'jump'];
 const missing = clipIds.filter((id) => !clipById.has(id));
 if (missing.length) throw new Error(`Missing safe animation clips: ${missing.join(', ')}`);
 
