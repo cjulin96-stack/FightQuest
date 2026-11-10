@@ -74,3 +74,32 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 .coach-avatar.motion-hinge .avatar-body{animation:hingeBody 2.6s ease-in-out infinite!important}
 .coach-avatar .avatar-arm,.coach-avatar .avatar-leg{transform-box:view-box;transform-origin:center;will-change:transform}
 @keyframes avatarBreath{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+
+/* FightQuest 1.2 — pivôs articulares para reduzir o efeito de flutuação */
+.coach-avatar .avatar-body{transform-box:view-box;transform-origin:130px 170px}
+.coach-avatar .avatar-arm{transform-box:view-box;will-change:transform}
+.coach-avatar .arm-left{transform-origin:99px 94px}
+.coach-avatar .arm-right{transform-origin:161px 94px}
+.coach-avatar .avatar-leg{transform-box:view-box;will-change:transform}
+.coach-avatar .leg-left{transform-origin:108px 200px}
+.coach-avatar .leg-right{transform-origin:152px 200px}
+.coach-avatar.motion-squat .avatar-body{animation:squatTorso 2.8s ease-in-out infinite!important}
+.coach-avatar.motion-squat .avatar-arm{animation:squatArmsJoint 2.8s ease-in-out infinite!important}
+.coach-avatar.motion-squat .leg-left{animation:squatLegL 2.8s ease-in-out infinite!important}
+.coach-avatar.motion-squat .leg-right{animation:squatLegR 2.8s ease-in-out infinite!important}
+.coach-avatar.motion-lunge .avatar-body{animation:lungeTorsoJoint 2.6s ease-in-out infinite!important}
+.coach-avatar.motion-lunge .leg-left{animation:lungeLegL 2.6s ease-in-out infinite!important}
+.coach-avatar.motion-lunge .leg-right{animation:lungeLegR 2.6s ease-in-out infinite!important}
+.coach-avatar.motion-row .arm-left,.coach-avatar.motion-row .arm-right{animation:rowArmsJoint 2.3s ease-in-out infinite!important}
+.coach-avatar.motion-curl .arm-left,.coach-avatar.motion-curl .arm-right{animation:curlArmsJoint 2s ease-in-out infinite!important}
+.coach-avatar.motion-guard .arm-left,.coach-avatar.motion-guard .arm-right{animation:guardArmsJoint 2s ease-in-out infinite!important}
+.coach-avatar.motion-step .leg-left{animation:stepLegJoint 1.8s ease-in-out infinite!important}
+.coach-avatar.motion-step .leg-right{animation:stepLegJoint 1.8s ease-in-out infinite reverse!important}
+@keyframes squatTorso{0%,100%{transform:translateY(0) scaleY(1)}45%,60%{transform:translateY(12px) scaleY(.94)}}
+@keyframes squatArmsJoint{0%,100%{transform:rotate(0)}45%,60%{transform:rotate(-24deg)}}
+@keyframes rowArmsJoint{0%,100%{transform:rotate(0)}50%{transform:rotate(-38deg)}}
+@keyframes curlArmsJoint{0%,100%{transform:rotate(0)}50%{transform:rotate(-48deg)}}
+@keyframes guardArmsJoint{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
+@keyframes lungeTorsoJoint{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+@keyframes stepLegJoint{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(7px) rotate(5deg)}}
