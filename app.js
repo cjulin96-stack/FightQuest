@@ -34,6 +34,23 @@ function muayPage(){const done=state.lessonDone||[];const levels=[["Base e equil
 <div class="notice"><b>Aprendizado seguro</b><br>As aulas iniciais demonstram postura, equilíbrio, deslocamento leve e coordenação. Golpes de impacto, saco e sparring exigem professor qualificado e equipamento adequado.</div>`;}
 function coachAvatar(motion,label){
   const title = label || "Demonstração do exercício";
+  // O ciclo de agachamento usa uma animação 3D pronta, com atribuição visível.
+  // Os outros movimentos continuam usando o instrutor local do FightQuest.
+  if (motion === "exercise-squat") {
+    return `<div class="fq-external-demo" role="region" aria-label="Demonstração 3D animada de agachamento">
+      <iframe
+        src="https://sketchfab.com/models/5c8ef4c9f6eb4a40a29ce20f05e9bb31/embed?autostart=1&ui_theme=dark&ui_infos=1&ui_controls=1&ui_watermark=1"
+        title="Instrutora 3D demonstrando agachamento"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="fq-external-credit">
+        <span>ANIMAÇÃO 3D · ${title}</span>
+        <a href="https://sketchfab.com/3d-models/personal-trainer-does-the-air-squat-exercise-5c8ef4c9f6eb4a40a29ce20f05e9bb31" target="_blank" rel="noopener noreferrer">Modelo por Walter Araujo · licença CC BY · ver original</a>
+      </div>
+    </div>`;
+  }
   return `<div class="fq-3d-viewer" data-motion="${motion||"idle"}" role="region" aria-label="Visualizador 3D do instrutor">
     <div class="fq-3d-viewport" aria-hidden="true"></div>
     <div class="fq-3d-loading" role="status">
