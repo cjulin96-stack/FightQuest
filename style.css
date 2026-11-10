@@ -160,3 +160,11 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 @keyframes fqMobility{0%,100%{transform:rotate(0)}50%{transform:rotate(-42deg)}}
 
 .coach-avatar .arm-right .forearm{transform-origin:169px 139px}
+
+/* FightQuest 2.0 — palco e personagem 3D */
+.fq3d-stage{position:relative;min-height:320px;height:clamp(300px,76vw,410px);overflow:hidden;border-radius:16px;background:radial-gradient(ellipse at 50% 55%,#17283b 0%,#090e18 68%);isolation:isolate}
+.fq3d-stage canvas{display:block;width:100%;height:100%;touch-action:pan-y;outline:none}
+.fq3d-loading{position:absolute;inset:0;display:grid;place-items:center;color:#38e8e1;font-size:10px;font-weight:800;letter-spacing:2px}
+.fq3d-caption{position:absolute;left:12px;bottom:10px;z-index:2;padding:7px 9px;border:1px solid #ff40534d;border-radius:8px;background:#090d16c9;color:#ff8798;font-size:8px;font-weight:800;letter-spacing:1px;pointer-events:none}
+.coach-avatar-scene .fq3d-stage{height:340px}
+.demo-screen .fq3d-stage{height:clamp(300px,88vw,390px);margin:-5px 0 12px}
