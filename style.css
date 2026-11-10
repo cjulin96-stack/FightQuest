@@ -25,3 +25,27 @@ button{font:inherit}.icon-button{width:42px;height:42px;border-radius:13px;borde
 .bottom-nav{padding-bottom:calc(8px + env(safe-area-inset-bottom));height:calc(76px + env(safe-area-inset-bottom))}
 @media(min-width:600px){.session-footer{position:static;padding:0;border:0;background:transparent;backdrop-filter:none}.modal-backdrop{padding:24px}}
 @media(max-width:390px){.install-button{padding:8px 10px;font-size:10px}.exercise-card{gap:9px;padding:12px 10px}.exercise-number{width:34px;height:34px}.session-footer{bottom:calc(76px + env(safe-area-inset-bottom))}}
+
+/* FightQuest 1.0 — identidade de arena */
+:root{--cyan:#ff304b;--lime:#ff5367;--purple:#ff6475;--danger:#ff304b}
+body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#070809}
+.accent,.eyebrow{color:#ff4059}.brand-mark{background:linear-gradient(135deg,#ff5266,#a90e28);color:#fff;box-shadow:0 0 24px #ff304b44}
+.btn{background:linear-gradient(105deg,#ff304b,#c81432);color:#fff}.btn.secondary{background:#191316;border-color:#49232b;color:#f5e9eb}.btn.ghost{color:#ff5367;border-color:#6d2635}
+.nav-item.active{color:#ff4059}.level-chip span{color:#ff4059}.progress-fill{background:linear-gradient(90deg,#d91536,#ff5367)}
+.hero-upgraded{background:linear-gradient(130deg,#251016,#111116 62%,#251018);border-color:#642333}
+.hero-upgraded h1 em,.page-title em{color:#ff4059}.hero-glow{border-color:#ff304b33;box-shadow:0 0 0 22px #ff304b0c,0 0 0 48px #ff304b08,0 0 60px #ff304b20}
+.mission-icon.cyan{background:#431923;color:#ff5367}.mission-icon.violet{background:#381820}.mission-icon.lime{background:#382027;color:#ff7184}
+.mission-card{background:linear-gradient(145deg,#211419,#101114)}.mission-card:hover,.level-card:hover{border-color:#9e3043}
+.install-button{color:#ff5268;border-color:#5e2935;background:#211217}
+.red-eyebrow{color:#ff4059}.fighter-stage{margin:4px 0 25px;padding:14px;border:1px solid #572431;border-radius:20px;background:linear-gradient(150deg,#1b1115,#090a0d 70%);box-shadow:0 18px 45px #0005}
+.stage-top,.stage-bottom{display:flex;justify-content:space-between;align-items:center}.stage-live,.stage-count,.stage-bottom small{font-size:9px;letter-spacing:1px;color:#a9aab1}.stage-live{color:#ff6578}.stage-live i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff304b;box-shadow:0 0 12px #ff304b;margin-right:6px}
+.fighter-scene{height:330px;position:relative;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 78%,#4b111d55,transparent 44%),linear-gradient(#0b0b0e,#111014)}
+.scene-ring{position:absolute;border:1px solid #ff304b24;border-radius:50%;width:230px;height:230px;top:48px}.ring-two{width:280px;height:280px;top:23px;border-color:#ff304b12}.floor-line{position:absolute;bottom:31px;width:78%;height:1px;background:linear-gradient(90deg,transparent,#ff304b88,transparent);box-shadow:0 0 16px #ff304b55}
+.fighter-svg{height:290px;width:195px;position:relative;z-index:1;filter:drop-shadow(0 10px 16px #000b)}.body-sway{transform-origin:110px 140px;animation:athleteBreath 3s ease-in-out infinite}
+.scene-caption{position:absolute;bottom:9px;left:0;right:0;text-align:center;z-index:2}.scene-caption b,.scene-caption span{display:block}.scene-caption b{font-size:9px;letter-spacing:2px;color:#ff5268}.scene-caption span{font-size:9px;color:#9a9aa2;margin-top:3px}
+.stage-bottom{margin:14px 0 9px}.stage-bottom b{font-size:10px;letter-spacing:1px}.stage-bottom small{display:block;margin-top:4px;letter-spacing:0}.stage-bottom>strong{font-size:21px;color:#ff5268}.red-track{background:#35171f}.red-fill{background:linear-gradient(90deg,#a80f2a,#ff5367)}
+.level-heading{display:flex;justify-content:space-between;align-items:end;margin:25px 2px 12px}.level-heading h2{font-size:19px;margin:5px 0 0}.level-total{font-size:9px;color:#a5a5ad;letter-spacing:1px}
+.level-path{display:grid;gap:10px}.level-card{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #38252b;border-radius:15px;background:linear-gradient(120deg,#1b1418,#101114);transition:.2s}.level-number{width:43px;height:43px;flex:none;border-radius:13px;display:grid;place-items:center;background:#431a25;color:#ff6578;font:800 18px 'Barlow Condensed',sans-serif}.level-copy{flex:1;min-width:0}.level-copy span,.level-copy b,.level-copy small{display:block}.level-copy span{font-size:8px;letter-spacing:1px;color:#ff667a}.level-copy b{font-size:12px;margin:4px 0}.level-copy small{font-size:9px;line-height:1.4;color:#a0a0a8}.level-open{border:1px solid #61303b;background:#27151b;color:#ff6478;border-radius:10px;padding:10px;font-size:10px;font-weight:800;white-space:nowrap}.level-done{border-color:#a52b40}.level-done .level-number{background:#a91b35;color:#fff}.level-locked{opacity:.48}.level-open:disabled{color:#777;background:#171719;border-color:#333}
+.level-modal-art{height:110px;margin:17px 0;border-radius:15px;display:grid;place-items:center;position:relative;overflow:hidden;background:radial-gradient(circle,#531522,#150d11 70%)}.level-modal-art span{font:800 55px 'Barlow Condensed',sans-serif;color:#ff4059;text-shadow:0 0 25px #ff304b88}.mini-orbit{position:absolute;width:90px;height:90px;border:1px solid #ff304b55;border-radius:50%;box-shadow:0 0 0 17px #ff304b12}
+@keyframes athleteBreath{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-3px) scaleY(1.012)}}
+@media(prefers-reduced-motion:reduce){.body-sway{animation:none}}
