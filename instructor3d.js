@@ -121,9 +121,10 @@ async function mount(host) {
       ? `Instrutor 3D carregado · movimento: ${selectedClip.name}.`
       : "Modelo humano carregado. As animações ainda não estão disponíveis neste arquivo.");
   } catch (error) {
-    console.info("[FightQuest 3D] Modelo ainda não disponível:", error.message);
+    const reason = error?.message || String(error) || "Falha desconhecida";
+    console.error("[FightQuest 3D] Falha ao carregar/validar o instrutor:", error);
     host.classList.add("is-error");
-    setStatus(host, "Não foi possível carregar o modelo 3D. Verifique a conexão e tente recarregar a página.");
+    setStatus(host, "Falha no instrutor 3D: " + reason + ". Confira a conexão e tente novamente.");
   }
 
   function animate() {
