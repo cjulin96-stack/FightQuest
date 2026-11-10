@@ -1,0 +1,35 @@
+name: Validate FightQuest app and demo media
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app.js"
+      - "index.html"
+      - "style.css"
+      - "assets/VIDEO-CREDITS.md"
+      - ".github/workflows/validate-app-media.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check app JavaScript syntax
+        run: node --check app.js
+      - name: Confirm video-based demo integration
+        run: |
+          grep -q 'function openExerciseDemo(key)' app.js
+          grep -q 'videos.pexels.com/video-files/6525515' app.js
+          grep -q 'Muscle_Strengthening_at_Home_-_Push-ups.webm' app.js
+          grep -q 'Bent-over_row_-_exercise_demonstration_video.webm' app.js
+          grep -q 'Standing-calf-raises-2.gif' app.js
+          ! grep -q 'instructor3d.js' index.html
+          grep -q 'app.js?v=20' index.html
+          test -s assets/VIDEO-CREDITS.md
+          echo "Video demonstrations, source credits, and app entry point are present."
