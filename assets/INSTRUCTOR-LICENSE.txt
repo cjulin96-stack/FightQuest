@@ -1,0 +1,18 @@
+FightQuest — Instrutor 3D
+==========================
+
+The instructor model is generated with Ara 3D Gen (MIT-licensed code) from
+MakeHuman character assets released under CC0 1.0.
+
+The embedded animation set is intentionally limited to general movement:
+Idle, Walk, Run and Jump. The motion-capture clips are derived from the
+Carnegie Mellon University Graphics Lab Motion Capture Database
+(mocap.cs.cmu.edu), which permits use in commercial and non-commercial
+products; the motion data itself may not be resold on its own.
+
+Generator source:
+https://github.com/olatunde85/3d-gen
+Pinned generator revision:
+c0abe46261171ad3ec570b39beabe386669cae4d
+
+This file records the provenance of the generated FightQuest asset.
