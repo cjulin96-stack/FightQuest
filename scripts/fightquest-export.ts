@@ -7,29 +7,21 @@ import { clipById } from '../src/core/anim/clips';
 import type { Clip } from '../src/core/anim/clips/types';
 import { planExport, runExport } from '../src/export';
 
-// Squat repetition: reuse the generator's validated crouch pose and blend it from/to idle.
-const smooth = (x: number) => { const t = Math.max(0, Math.min(1, x)); return t * t * (3 - 2 * t); };
-const idleClip = clipById.get('idle');
-const crouchClip = clipById.get('crouch');
-if (!idleClip || !crouchClip) throw new Error('Idle/crouch base clips are required for the squat.');
-const idlePose = idleClip.sample(0);
-const squatPose = crouchClip.sample(0);
+// Squat repetition: use the generator's captured human sit/stand motion rather than
+// blending two static poses. The recorded sequence preserves coordinated joint timing.
+const sitDown = clipById.get('sit_down');
+const standUp = clipById.get('stand_up');
+if (!sitDown || !standUp) throw new Error('Captured sit_down/stand_up motion clips are required.');
+const half = sitDown.duration;
 const squat: Clip = {
   id: 'squat',
   name: 'Squat repetition',
   category: 'Actions',
-  duration: 3.6,
+  duration: half * 2,
   loop: true,
   sample: (time) => {
-    const phase = (time % 3.6) / 3.6;
-    const down = smooth(phase / 0.30);
-    const up = smooth((phase - 0.58) / 0.30);
-    const depth = phase < 0.30 ? down : phase < 0.58 ? 1 : phase < 0.88 ? 1 - up : 0;
-    return {
-      ...idlePose,
-      root: { ...idlePose.root, ground: true },
-      blend: { sample: squatPose, w: depth, ground: true },
-    };
+    const t = ((time % (half * 2)) + half * 2) % (half * 2);
+    return t < half ? sitDown.sample(t) : standUp.sample(t - half);
   },
 };
 clipById.set(squat.id, squat);
