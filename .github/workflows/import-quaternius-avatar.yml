@@ -1,0 +1,72 @@
+name: Import Quaternius humanoid for squat demo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-quaternius-avatar.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-avatar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout FightQuest
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download CC0 Quaternius humanoid and dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEST="assets/quaternius"
+          mkdir -p "$DEST"
+          BASE="https://media.githubusercontent.com/media/dcramer/terra/602906d2e4e3e93d0bb0ade63b23b68b37c57bd5/art/characters/quaternius/universal-base-characters"
+          RAW="https://raw.githubusercontent.com/dcramer/terra/602906d2e4e3e93d0bb0ade63b23b68b37c57bd5/art/characters/quaternius/universal-base-characters"
+          curl --fail --location --retry 3 "$RAW/Regular_Male_FullBody.gltf" --output "$DEST/Regular_Male_FullBody.gltf"
+          curl --fail --location --retry 3 "$BASE/Regular_Male_FullBody.bin" --output "$DEST/Regular_Male_FullBody.bin"
+          for file in \
+            T_Hair_1_Normal.png \
+            T_Hair_1_BaseColor.png \
+            T_Eye_Normal.png \
+            T_Eye_Brown.png \
+            T_Regular_Male_Normal_png.png \
+            T_Regular_Male_Dark_BaseColor_png.png \
+            T_Regular_Male_Roughness_png.png
+          do
+            curl --fail --location --retry 3 "$BASE/$file" --output "$DEST/$file"
+          done
+          curl --fail --location --retry 3 "$RAW/License_Source.txt" --output "$DEST/QUATERNIUS-LICENSE.txt"
+          test "$(wc -c < "$DEST/Regular_Male_FullBody.bin")" -eq 700600
+          file "$DEST"/*
+          du -sh "$DEST"
+
+      - name: Validate glTF skin and linked resources
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'assets/quaternius/Regular_Male_FullBody.gltf';
+          const dir = 'assets/quaternius';
+          const gltf = JSON.parse(fs.readFileSync(path, 'utf8'));
+          if (!gltf.skins?.length || gltf.skins[0].joints.length < 50) {
+            throw new Error('Expected a full humanoid skeleton with at least 50 joints');
+          }
+          for (const uri of [gltf.buffers?.[0]?.uri, ...(gltf.images || []).map(x => x.uri)]) {
+            if (!uri || !fs.existsSync(dir + '/' + uri)) throw new Error('Missing glTF dependency: ' + uri);
+          }
+          console.log('Quaternius model validated:', gltf.skins[0].joints.length, 'joints,', gltf.meshes?.length || 0, 'meshes');
+          console.log('Bone names:', gltf.skins[0].joints.map(i => gltf.nodes[i]?.name).filter(Boolean).join(', '));
+          NODE
+
+      - name: Commit Quaternius avatar
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/quaternius
+          git commit -m "Add CC0 Quaternius humanoid for squat animation"
+          git push origin HEAD:main
