@@ -7,21 +7,52 @@ import { clipById } from '../src/core/anim/clips';
 import type { Clip } from '../src/core/anim/clips/types';
 import { planExport, runExport } from '../src/export';
 
-// Squat repetition: use the generator's captured human sit/stand motion rather than
-// blending two static poses. The recorded sequence preserves coordinated joint timing.
-const sitDown = clipById.get('sit_down');
-const standUp = clipById.get('stand_up');
-if (!sitDown || !standUp) throw new Error('Captured sit_down/stand_up motion clips are required.');
-const half = sitDown.duration;
+// Purpose-built bodyweight squat cycle. The generator's Crouch clip supplies
+// anatomically valid game-rig joint directions; this clip adds controlled descent,
+// a brief bottom pause, and a controlled return to standing (not a chair sit/stand).
+const idle = clipById.get('idle');
+const crouch = clipById.get('crouch');
+if (!idle || !crouch) throw new Error('Idle and crouch source poses are required.');
+const squatDuration = 2.6;
+const downEnd = 1.05;
+const holdEnd = 1.35;
 const squat: Clip = {
   id: 'squat',
   name: 'Squat repetition',
   category: 'Actions',
-  duration: half * 2,
+  duration: squatDuration,
   loop: true,
   sample: (time) => {
-    const t = ((time % (half * 2)) + half * 2) % (half * 2);
-    return t < half ? sitDown.sample(t) : standUp.sample(t - half);
+    const t = ((time % squatDuration) + squatDuration) % squatDuration;
+    const smooth = (x: number) => {
+      const v = Math.max(0, Math.min(1, x));
+      return v * v * (3 - 2 * v);
+    };
+    const depth = t < downEnd
+      ? smooth(t / downEnd)
+      : t < holdEnd
+        ? 1
+        : 1 - smooth((t - holdEnd) / (squatDuration - holdEnd));
+    const standing = idle.sample(0);
+    const lowered = crouch.sample(0);
+    const bones: Record<string, [number, number, number]> = {};
+    const names = new Set([...Object.keys(standing.bones), ...Object.keys(lowered.bones)]);
+    for (const name of names) {
+      const a = standing.bones[name] || [0, 0, 0];
+      const b = lowered.bones[name] || a;
+      // Keep the squat slightly above the generator's deepest crouch pose.
+      const amount = depth * 0.78;
+      bones[name] = [
+        a[0] + (b[0] - a[0]) * amount,
+        a[1] + (b[1] - a[1]) * amount,
+        a[2] + (b[2] - a[2]) * amount,
+      ];
+    }
+    return {
+      bones,
+      root: { ground: true },
+      gaze: [0, 0],
+    };
   },
 };
 clipById.set(squat.id, squat);
