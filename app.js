@@ -73,71 +73,11 @@ function openExerciseDemo(key){
       source:"https://www.dvidshub.net/video/517502/body-weight-squat",
       note:"Vídeo de agachamento com o peso do próprio corpo, sem barra ou halteres."
     },
-    "Flexão inclinada":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/zR31Ytxj9E4",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"A referência em vídeo mostra flexão no chão. A variação inclinada do treino é mais leve: use uma parede ou apoio firme e estável. O vídeo serve para observar o alinhamento do tronco e dos braços."
-    },
     "Remada com mochila leve":{
       kind:"video",src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Bent-over_row_-_exercise_demonstration_video.webm",mime:"video/webm",
       credit:"FitnessScape",license:"Creative Commons BY 3.0",
       source:"https://commons.wikimedia.org/wiki/File:Bent-over_row_-_exercise_demonstration_video.webm",
       note:"Demonstra a trajetória da remada curvada. O equipamento do vídeo pode ser diferente da mochila leve sugerida; não copie a carga mostrada."
-    },
-    "Ponte de glúteos":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/iU423T5b99w",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"Demonstração de ponte de glúteos. Observe a elevação do quadril e o controle do tronco, sem exagerar a extensão da lombar."
-    },
-    "Elevação de panturrilha":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/s2UkxRg40Mg",
-      credit:"Online Physio",license:"Player oficial do YouTube",
-      source:"https://onlinephysio.au/fast-ankle-sprain-relief-recover-fast/",
-      note:"Demonstração de elevação de panturrilha em pé. Suba e desça com controle; use apoio estável se necessário."
-    },
-    "Dead bug":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/r7thg-rW5W8",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"Observe a alternância de braço e perna enquanto o tronco permanece estável. A lombar não deve arquear de forma exagerada."
-    },
-    "Afundo alternado":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/f7EBbPsfPWI",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"Vídeo de afundo. Faça a versão alternada com passos confortáveis, sem descer além do que consegue controlar e mantendo o joelho alinhado ao pé."
-    },
-    "Flexão com joelhos":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/zR31Ytxj9E4",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"A referência mostra flexão tradicional no chão, não a variação apoiada nos joelhos. Use o vídeo para observar o alinhamento dos braços e do tronco; a versão com joelhos reduz a dificuldade."
-    },
-    "Levantamento romeno leve":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/ZaeoXY6Ikq4",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"Demonstração de levantamento romeno. O foco é levar o quadril para trás mantendo a coluna neutra. Comece sem carga; não copie o peso do vídeo."
-    },
-    "Rosca com mochila leve":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/aaAaUG9-E8E",
-      credit:"Keith Hanenian · Built Different",license:"Player oficial do YouTube",
-      source:"https://www.youtube.com/watch?v=aaAaUG9-E8E",
-      note:"O vídeo explica roscas de bíceps com halteres, não com mochila. Use apenas como referência visual da flexão do cotovelo; se a mochila não permitir pegada firme, não a utilize."
-    },
-    "Bird dog":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/uWLFT9MJQ18",
-      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
-      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
-      note:"Demonstração de bird dog. Estenda braço e perna opostos sem girar o quadril ou deixar o tronco perder estabilidade."
-    },
-    "Aperto de toalha":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/DlAJTL1BRac",
-      credit:"Rehab My Patient",license:"Player oficial do YouTube",
-      source:"https://www.youtube.com/watch?v=DlAJTL1BRac",
-      note:"Demonstração de aperto de toalha para a mão e a pegada. Faça uma contração confortável, sem apertar ao máximo e sem dor."
     }
   };
   const media=mediaByName[item[0]];
