@@ -1,0 +1,39 @@
+name: Validate FightQuest instructor JavaScript
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "instructor3d.js"
+      - "index.html"
+      - "assets/quaternius/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax-and-rig:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check JavaScript module syntax
+        run: node --input-type=module --check < instructor3d.js
+      - name: Validate Quaternius rig dependencies
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'assets/quaternius/Regular_Male_FullBody.gltf';
+          const dir = 'assets/quaternius';
+          const gltf = JSON.parse(fs.readFileSync(path, 'utf8'));
+          const names = (gltf.skins?.[0]?.joints || []).map(i => gltf.nodes[i]?.name);
+          for (const name of ['pelvis','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r']) {
+            if (!names.includes(name)) throw new Error('Missing required squat bone: ' + name);
+          }
+          if (!fs.existsSync(dir + '/' + gltf.buffers[0].uri)) throw new Error('Missing binary buffer');
+          for (const image of gltf.images || []) {
+            if (!fs.existsSync(dir + '/' + image.uri)) throw new Error('Missing texture: ' + image.uri);
+          }
+          console.log('Syntax and 65-bone squat rig checks passed.');
+          NODE
