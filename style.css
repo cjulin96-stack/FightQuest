@@ -158,3 +158,5 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 @keyframes fqCalf{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes fqGrip{0%,100%{transform:scale(1)}50%{transform:scale(.94)}}
 @keyframes fqMobility{0%,100%{transform:rotate(0)}50%{transform:rotate(-42deg)}}
+
+.coach-avatar .arm-right .forearm{transform-origin:169px 139px}
