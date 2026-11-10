@@ -20,7 +20,11 @@ function createSquatHumanoid(scene) {
   const pants = new THREE.MeshStandardMaterial({ color: 0x24334a, roughness: 0.82 });
   const skin = new THREE.MeshStandardMaterial({ color: 0xe5a879, roughness: 0.78 });
   const shoes = new THREE.MeshStandardMaterial({ color: 0xe9edf2, roughness: 0.65 });
-  const jointGeometry = new THREE.SphereGeometry(1, 16, 12);
+  const sole = new THREE.MeshStandardMaterial({ color: 0x101a29, roughness: 0.88 });
+  const hair = new THREE.MeshStandardMaterial({ color: 0x182333, roughness: 0.9 });
+  const eyes = new THREE.MeshStandardMaterial({ color: 0x17202d, roughness: 0.45 });
+  const accent = new THREE.MeshStandardMaterial({ color: 0xffc857, roughness: 0.55, metalness: 0.12 });
+  const jointGeometry = new THREE.SphereGeometry(1, 24, 18);
   const up = new THREE.Vector3(0, 1, 0);
   const parts = {};
 
@@ -64,11 +68,33 @@ function createSquatHumanoid(scene) {
     joint(name, name.includes("Knee") ? 0.078 : 0.06, name.includes("Shoulder") ? shirt : skin);
   });
   ["leftFoot","rightFoot"].forEach((name) => {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.085, 0.25), shoes);
+    const soleMesh = new THREE.Mesh(new THREE.BoxGeometry(0.155, 0.035, 0.27), sole);
+    soleMesh.castShadow = true;
+    group.add(soleMesh);
+    parts[name + "Sole"] = soleMesh;
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.09, 0.26), shoes);
     mesh.castShadow = true;
     group.add(mesh);
     parts[name] = mesh;
   });
+
+  // Small design details turn the primitive rig into a deliberate game avatar.
+  function detail(name, geometry, material) {
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow = true;
+    group.add(mesh);
+    parts[name] = mesh;
+    return mesh;
+  }
+  detail("hairCap", new THREE.SphereGeometry(1, 24, 16), hair).scale.set(0.137, 0.09, 0.132);
+  detail("hairBack", new THREE.SphereGeometry(1, 20, 14), hair).scale.set(0.13, 0.13, 0.105);
+  detail("leftEye", new THREE.SphereGeometry(0.014, 12, 10), eyes);
+  detail("rightEye", new THREE.SphereGeometry(0.014, 12, 10), eyes);
+  detail("nose", new THREE.SphereGeometry(0.018, 12, 10), skin);
+  detail("shirtMark", new THREE.SphereGeometry(0.043, 16, 12), accent).scale.set(1, 1.15, 0.25);
+  detail("waistBand", new THREE.BoxGeometry(0.29, 0.045, 0.19), accent);
+  detail("leftBrow", new THREE.BoxGeometry(0.035, 0.008, 0.012), hair);
+  detail("rightBrow", new THREE.BoxGeometry(0.035, 0.008, 0.012), hair);
 
   const v = (x, y, z) => new THREE.Vector3(x, y, z);
   const smooth = (x) => {
@@ -126,6 +152,15 @@ function createSquatHumanoid(scene) {
     between(parts.torso, v(0, hipY + 0.04, hipZ), chest);
     between(parts.neck, v(0, shoulderY - 0.025, shoulderZ), head.clone().add(v(0, -0.075, 0)));
     at(parts.head, head);
+    at(parts.hairCap, head.clone().add(v(0, 0.075, -0.005)));
+    at(parts.hairBack, head.clone().add(v(0, -0.015, -0.075)));
+    at(parts.leftEye, head.clone().add(v(-0.048, 0.012, 0.116)));
+    at(parts.rightEye, head.clone().add(v(0.048, 0.012, 0.116)));
+    at(parts.leftBrow, head.clone().add(v(-0.048, 0.035, 0.119)));
+    at(parts.rightBrow, head.clone().add(v(0.048, 0.035, 0.119)));
+    at(parts.nose, head.clone().add(v(0, -0.018, 0.13)));
+    at(parts.shirtMark, chest.clone().add(v(0.075, -0.04, 0.145)));
+    at(parts.waistBand, v(0, hipY + 0.055, hipZ + 0.015));
     at(parts.leftShoulder, shoulderL); at(parts.rightShoulder, shoulderR);
     at(parts.leftElbow, elbowL); at(parts.rightElbow, elbowR);
     at(parts.leftKnee, kneeL); at(parts.rightKnee, kneeR);
@@ -141,8 +176,10 @@ function createSquatHumanoid(scene) {
     between(parts.leftForearm, elbowL, handL);
     between(parts.rightForearm, elbowR, handR);
 
-    parts.leftFoot.position.set(-0.16, 0.075, 0.105);
-    parts.rightFoot.position.set(0.16, 0.075, 0.105);
+    parts.leftFoot.position.set(-0.16, 0.092, 0.105);
+    parts.rightFoot.position.set(0.16, 0.092, 0.105);
+    parts.leftFootSole.position.set(-0.16, 0.035, 0.105);
+    parts.rightFootSole.position.set(0.16, 0.035, 0.105);
   }
 
   update(0);
@@ -158,7 +195,7 @@ function createSquatHumanoid(scene) {
       });
       scene.remove(group);
       jointGeometry.dispose();
-      [shirt, pants, skin, shoes].forEach((material) => material.dispose());
+      [shirt, pants, skin, shoes, sole, hair, eyes, accent].forEach((material) => material.dispose());
     }
   };
 }
