@@ -179,3 +179,19 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 .fq-visual-rebuild>small{color:#8294aa;font-size:10px;line-height:1.5}
 .demo-screen>.fq-visual-rebuild{min-height:235px;height:100%;border:0;border-radius:12px}
 .coach-avatar-scene:has(.fq-visual-rebuild) .avatar-halo,.coach-avatar-scene:has(.fq-visual-rebuild) .avatar-floor{display:none}
+
+
+/* FightQuest 2.1 — visual do estúdio em reconstrução */
+.fq-visual-rebuild{min-height:260px;padding:22px 16px;gap:12px}
+.fq-studio-orbit{width:92px;height:92px;position:relative;display:grid;place-items:center;margin-bottom:2px}
+.fq-studio-orbit:before,.fq-studio-orbit:after{content:"";position:absolute;inset:5px;border:1px solid #ff526c66;border-radius:50%;box-shadow:0 0 22px #ff294d18}
+.fq-studio-orbit:after{inset:17px;border-color:#5adbe777;transform:rotateX(68deg) rotate(-28deg)}
+.fq-studio-orbit span{position:absolute;inset:0;border:1px dashed #ff718866;border-radius:50%;animation:fqOrbit 12s linear infinite}
+.fq-studio-orbit i{position:absolute;width:8px;height:8px;right:9px;top:15px;border-radius:50%;background:#ff6b82;box-shadow:0 0 13px #ff526c}
+.fq-studio-orbit>b{font-size:21px;letter-spacing:2px;color:#f7f9ff;text-shadow:0 0 18px #ff526c66}
+.fq-visual-rebuild>strong{font-size:15px;color:#f7f9ff;letter-spacing:.2px}
+.fq-build-steps{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:2px}
+.fq-build-steps>span{display:flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid #34465b;border-radius:8px;background:#111d2b;color:#c8d5e4;font-size:9px}
+.fq-build-steps i{font-style:normal;color:#ff8295;font-weight:900}
+@keyframes fqOrbit{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.fq-studio-orbit span{animation:none}}
