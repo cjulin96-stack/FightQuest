@@ -168,3 +168,14 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 .fq3d-caption{position:absolute;left:12px;bottom:10px;z-index:2;padding:7px 9px;border:1px solid #ff40534d;border-radius:8px;background:#090d16c9;color:#ff8798;font-size:8px;font-weight:800;letter-spacing:1px;pointer-events:none}
 .coach-avatar-scene .fq3d-stage{height:340px}
 .demo-screen .fq3d-stage{height:clamp(300px,88vw,390px);margin:-5px 0 12px}
+
+
+/* FightQuest visual reset: remove o avatar quebrado enquanto o novo estúdio 3D é reconstruído. */
+.fq-visual-rebuild{width:100%;min-height:220px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;border:1px solid #31445a;border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#1c3449 0%,#101a29 58%,#0b121e 100%);color:var(--text)}
+.fq-visual-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;border:1px solid #ff526c88;background:#ff294d18;color:#ff7188;font-weight:900;font-size:18px;letter-spacing:1px;box-shadow:0 0 28px #ff294d22}
+.fq-visual-rebuild .eyebrow{color:#ff7188}
+.fq-visual-rebuild>b{font-size:15px;letter-spacing:.2px}
+.fq-visual-rebuild>p{max-width:340px;margin:0;color:#b3c1d3;font-size:12px;line-height:1.6}
+.fq-visual-rebuild>small{color:#8294aa;font-size:10px;line-height:1.5}
+.demo-screen>.fq-visual-rebuild{min-height:235px;height:100%;border:0;border-radius:12px}
+.coach-avatar-scene:has(.fq-visual-rebuild) .avatar-halo,.coach-avatar-scene:has(.fq-visual-rebuild) .avatar-floor{display:none}
