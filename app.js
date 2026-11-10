@@ -24,7 +24,7 @@ function strengthPage(){const checks=state.checks?.[activeWorkout]||[];return `
 <div class="coach-banner"><div class="coach-badge">▶<span>●</span></div><div><b>BIBLIOTECA DE DEMONSTRAÇÕES</b><small>Vídeos reais com autoria e licença identificadas.</small></div><span class="coach-live">● MÍDIA VALIDADA</span></div>
 <div class="session-summary"><div><span class="eyebrow">SESSÃO SELECIONADA</span><b>Treino ${activeWorkout}</b></div><div><strong>06</strong><small>EXERCÍCIOS</small></div><div><strong>02</strong><small>SÉRIES BASE</small></div></div>
 <div class="section-head"><div><span class="eyebrow">CHECKLIST DA SESSÃO</span><h2>Aprenda e execute</h2></div><span class="section-note" id="checkedCount">0 / 6</span></div>
-<div class="exercise-list">${plans[activeWorkout].map((x,i)=>`<article class="exercise-card coach-exercise"><input class="exercise-check" type="checkbox" data-exercise="${i}" ${checks.includes(i)?"checked":""}><span class="exercise-number">${String(i+1).padStart(2,"0")}</span><span class="exercise-info"><b>${x[0]}</b><strong>${x[1]}</strong><small>${x[2]}</small><button class="demo-link" type="button" data-demo="${activeWorkout}-${i}">▶ Ver demonstração</button></span><span class="exercise-done">✓</span></article>`).join("")}</div>
+<div class="exercise-list">${plans[activeWorkout].map((x,i)=>`<article class="exercise-card coach-exercise"><input class="exercise-check" type="checkbox" data-exercise="${i}" ${checks.includes(i)?"checked":""}><span class="exercise-number">${String(i+1).padStart(2,"0")}</span><span class="exercise-info"><b>${x[0]}</b><strong>${x[1]}</strong><small>${x[2]}</small><small class="exercise-muscles">Trabalha: ${exerciseInfo[x[0]]?.primary||"Músculos de suporte"}</small><button class="demo-link" type="button" data-demo="${activeWorkout}-${i}">▶ Ver demonstração</button></span><span class="exercise-done">✓</span></article>`).join("")}</div>
 <div class="session-footer"><div class="notice"><b>Treino responsável</b><br>Comece leve, aqueça antes e deixe 2–3 repetições de reserva. Interrompa se sentir dor, tontura ou mal-estar.</div><button class="btn block" id="finishWorkout">Finalizar sessão · +15 XP</button><button class="btn secondary block" data-timer>Iniciar cronômetro</button></div>`;}
 function muayPage(){const done=state.lessonDone||[];const levels=[["Base e equilíbrio","Entenda a base e distribua o peso com conforto.","INICIANTE"],["Guarda e postura","Estude a posição defensiva e a atenção corporal.","INICIANTE"],["Deslocamento básico","Observe passos curtos e equilíbrio ao caminhar.","FUNDAMENTOS"],["Coordenação e respiração","Combine ritmo leve, coordenação e respiração natural.","FUNDAMENTOS"],["Mobilidade e aquecimento","Prepare articulações e recupere sem forçar amplitudes.","PREPARAÇÃO"]];return `
 <div class="page-hero"><span class="eyebrow red-eyebrow">FIGHTQUEST / ACADEMIA GUIADA</span><h1 class="page-title">MUAY <em>THAI</em></h1><p>Trilha guiada de postura, equilíbrio, mobilidade e coordenação. As demonstrações 3D estão em reconstrução.</p></div>
@@ -49,43 +49,95 @@ function coachAvatar(motion,label){
 }
 function openLevel(i){const data=[["Base e equilíbrio","motion-stance","Observe o instrutor de frente e de perfil. Repare na posição confortável dos pés, no alinhamento do tronco e na distribuição equilibrada do peso.","A demonstração alterna entre vista frontal e lateral. Estude primeiro; qualquer prática deve ser leve, em espaço livre e sem forçar articulações."],["Guarda e postura","motion-guard","Observe como o instrutor mantém as mãos em posição protetora, os ombros relaxados e a atenção à frente.","Esta aula é uma explicação visual de postura defensiva, não um treino de confronto. Procure um professor para corrigir a técnica presencialmente."],["Deslocamento básico","motion-step","Observe o instrutor transferindo o peso e dando passos pequenos, mantendo a estabilidade.","A animação mostra o princípio do deslocamento. Se praticar, caminhe devagar em espaço livre, sem acelerar ou cruzar os pés."],["Coordenação e respiração","motion-rhythm","Observe a alternância suave de braços e pernas e a respiração natural durante o movimento.","Use a animação para entender ritmo e coordenação. Faça apenas mobilidade confortável e pare se sentir tontura ou desconforto."],["Mobilidade e aquecimento","motion-mobility","Observe movimentos articulares leves e controlados antes de uma sessão.","A demonstração é educativa. Não force alongamentos nem tente reproduzir amplitudes extremas."]][i];if(!data)return;const done=(state.lessonDone||[]).includes(i),m=document.createElement("div");m.className="modal-backdrop";m.innerHTML=`<section class="lesson-modal coach-lesson"><button class="modal-close" id="closeLevel" aria-label="Fechar">×</button><span class="eyebrow red-eyebrow">INSTRUTOR VIRTUAL / AULA 0${i+1}</span><div class="lesson-visual-card"><span>FIGHTQUEST / FUNDAMENTOS</span><strong>${data[0]}</strong><p>Guia de estudo · observação e mobilidade leve</p></div><h2>${data[0]}</h2><div class="demo-caption"><b>O QUE OBSERVAR</b><p>${data[2]}</p></div><div class="lesson-detail"><b>ORIENTAÇÃO</b><p>${data[3]}</p></div><button class="btn block" id="completeLevel">${done?"Etapa já concluída ✓":"Concluir aula estudada · +5 XP"}</button></section>`;document.body.append(m);const close=()=>m.remove();m.querySelector("#closeLevel").onclick=close;m.onclick=e=>{if(e.target===m)close();};m.querySelector("#completeLevel").onclick=()=>{if(!done){state.lessonDone=state.lessonDone||[];state.lessonDone.push(i);state.xp+=5;state.completed.push(Date.now());save();toast("Aula registrada! +5 XP");}close();page("muaythai");};}
 function exerciseMotion(group,index){const name=plans[group][index]?.[0]||"";const map={"Agachamento":"squat","Flexão inclinada":"pushup","Remada com mochila leve":"row","Ponte de glúteos":"glute-bridge","Elevação de panturrilha":"calf-raise","Dead bug":"dead-bug","Afundo alternado":"lunge","Flexão com joelhos":"pushup","Levantamento romeno leve":"hinge","Rosca com mochila leve":"curl","Bird dog":"bird-dog","Aperto de toalha":"isometric"};return "exercise-"+(map[name]||"squat");}
+const exerciseInfo={
+  "Agachamento":{primary:"Quadríceps e glúteo máximo",secondary:"Posterior da coxa, adutores e músculos do tronco",action:"Treina a extensão dos joelhos e quadris para sentar e levantar, além de exigir equilíbrio e estabilidade."},
+  "Flexão inclinada":{primary:"Peitoral maior",secondary:"Tríceps, parte frontal dos ombros e estabilizadores do tronco",action:"Treina o movimento de empurrar e a estabilidade do corpo em linha. O apoio elevado diminui a parte do peso corporal que precisa ser empurrada."},
+  "Remada com mochila leve":{primary:"Latíssimo do dorso e músculos entre as escápulas",secondary:"Bíceps, deltoide posterior e estabilizadores da coluna",action:"Treina o movimento de puxar, aproximando os braços do tronco e ajudando a controlar as escápulas."},
+  "Ponte de glúteos":{primary:"Glúteo máximo",secondary:"Posterior da coxa e músculos estabilizadores do abdômen",action:"Treina a extensão do quadril e o controle da pelve, sem precisar arquear a lombar."},
+  "Elevação de panturrilha":{primary:"Gastrocnêmio e sóleo (panturrilha)",secondary:"Músculos menores que estabilizam o tornozelo e o pé",action:"Treina a flexão plantar do tornozelo, movimento usado para elevar o calcanhar ao ficar na ponta dos pés."},
+  "Dead bug":{primary:"Transverso e reto abdominal",secondary:"Oblíquos, flexores do quadril e estabilizadores profundos do tronco",action:"Treina a capacidade de manter o tronco estável enquanto braços e pernas se movimentam alternadamente."},
+  "Afundo alternado":{primary:"Quadríceps e glúteos",secondary:"Posterior da coxa, panturrilhas e músculos que estabilizam o quadril",action:"Treina força unilateral, equilíbrio e controle do quadril e dos joelhos durante a passada."},
+  "Flexão com joelhos":{primary:"Peitoral maior",secondary:"Tríceps, parte frontal dos ombros e estabilizadores do tronco",action:"Treina o movimento de empurrar com menor alavanca e menor exigência que a flexão tradicional."},
+  "Levantamento romeno leve":{primary:"Posterior da coxa e glúteo máximo",secondary:"Eretores da coluna, abdômen e músculos das costas que estabilizam",action:"Treina o padrão de dobrar o quadril para trás e estendê-lo novamente, mantendo a coluna neutra."},
+  "Rosca com mochila leve":{primary:"Bíceps braquial",secondary:"Braquial e braquiorradial (antebraço)",action:"Treina a flexão do cotovelo, aproximando a mão do ombro. O tronco deve ficar quieto, sem embalo."},
+  "Bird dog":{primary:"Estabilizadores profundos do tronco e glúteos",secondary:"Deltoides, músculos das costas e estabilizadores do quadril",action:"Treina coordenação entre lados opostos do corpo e estabilidade do tronco enquanto um braço e a perna contrária se estendem."},
+  "Aperto de toalha":{primary:"Flexores dos dedos e músculos da mão",secondary:"Músculos do antebraço responsáveis pela pegada",action:"Treina a força de preensão manual, útil para segurar objetos. É um exercício local para mãos e antebraços."}
+};
 function openExerciseDemo(key){
   const [group,index]=key.split("-"),item=plans[group][+index];
   if(!item)return;
   const mediaByName={
     "Agachamento":{
-      kind:"embed",
-      src:"https://www.dvidshub.net/video/embed/517502",
-      credit:"U.S. Marine Corps · Capt. Joshua Pena / Cpl. Amber Jennings",
-      license:"Domínio público (DVIDS)",
+      kind:"embed",src:"https://www.dvidshub.net/video/embed/517502",
+      credit:"U.S. Marine Corps · DVIDS",license:"Domínio público (DVIDS)",
       source:"https://www.dvidshub.net/video/517502/body-weight-squat",
-      note:"Demonstração de agachamento com o peso do próprio corpo, sem barra ou halteres. O vídeo é hospedado pelo DVIDS."
+      note:"Vídeo de agachamento com o peso do próprio corpo, sem barra ou halteres."
     },
     "Flexão inclinada":{
-      kind:"video",
-      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Muscle_Strengthening_at_Home_-_Push-ups.webm",
-      mime:"video/webm",
-      credit:"Centers for Disease Control and Prevention (CDC)",
-      license:"Domínio público nos EUA",
-      source:"https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Push-ups.webm",
-      note:"O vídeo mostra flexão no chão, não a versão inclinada. Para a variação inclinada, use apenas um apoio firme e estável e reduza a dificuldade."
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/zR31Ytxj9E4",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"A referência em vídeo mostra flexão no chão. A variação inclinada do treino é mais leve: use uma parede ou apoio firme e estável. O vídeo serve para observar o alinhamento do tronco e dos braços."
     },
     "Remada com mochila leve":{
-      kind:"video",
-      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Bent-over_row_-_exercise_demonstration_video.webm",
-      mime:"video/webm",
-      credit:"FitnessScape",
-      license:"Creative Commons BY 3.0",
+      kind:"video",src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Bent-over_row_-_exercise_demonstration_video.webm",mime:"video/webm",
+      credit:"FitnessScape",license:"Creative Commons BY 3.0",
       source:"https://commons.wikimedia.org/wiki/File:Bent-over_row_-_exercise_demonstration_video.webm",
-      note:"O vídeo demonstra a trajetória da remada curvada com outro equipamento. No plano FightQuest, a referência é uma mochila leve; não copie cargas do vídeo."
+      note:"Demonstra a trajetória da remada curvada. O equipamento do vídeo pode ser diferente da mochila leve sugerida; não copie a carga mostrada."
+    },
+    "Ponte de glúteos":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/iU423T5b99w",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"Demonstração de ponte de glúteos. Observe a elevação do quadril e o controle do tronco, sem exagerar a extensão da lombar."
     },
     "Elevação de panturrilha":{
-      kind:"image",
-      src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Standing-calf-raises-2.gif",
-      credit:"Everkinetic",
-      license:"Creative Commons BY-SA 3.0",
-      source:"https://commons.wikimedia.org/wiki/File:Standing-calf-raises-2.gif",
-      note:"Demonstração animada. Use apoio estável se precisar e faça apenas uma amplitude confortável."
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/s2UkxRg40Mg",
+      credit:"Online Physio",license:"Player oficial do YouTube",
+      source:"https://onlinephysio.au/fast-ankle-sprain-relief-recover-fast/",
+      note:"Demonstração de elevação de panturrilha em pé. Suba e desça com controle; use apoio estável se necessário."
+    },
+    "Dead bug":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/r7thg-rW5W8",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"Observe a alternância de braço e perna enquanto o tronco permanece estável. A lombar não deve arquear de forma exagerada."
+    },
+    "Afundo alternado":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/f7EBbPsfPWI",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"Vídeo de afundo. Faça a versão alternada com passos confortáveis, sem descer além do que consegue controlar e mantendo o joelho alinhado ao pé."
+    },
+    "Flexão com joelhos":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/zR31Ytxj9E4",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"A referência mostra flexão tradicional no chão, não a variação apoiada nos joelhos. Use o vídeo para observar o alinhamento dos braços e do tronco; a versão com joelhos reduz a dificuldade."
+    },
+    "Levantamento romeno leve":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/ZaeoXY6Ikq4",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"Demonstração de levantamento romeno. O foco é levar o quadril para trás mantendo a coluna neutra. Comece sem carga; não copie o peso do vídeo."
+    },
+    "Rosca com mochila leve":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/aaAaUG9-E8E",
+      credit:"Keith Hanenian · Built Different",license:"Player oficial do YouTube",
+      source:"https://www.youtube.com/watch?v=aaAaUG9-E8E",
+      note:"O vídeo explica roscas de bíceps com halteres, não com mochila. Use apenas como referência visual da flexão do cotovelo; se a mochila não permitir pegada firme, não a utilize."
+    },
+    "Bird dog":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/uWLFT9MJQ18",
+      credit:"University of Maryland, Baltimore · URecFit",license:"Player oficial do YouTube",
+      source:"https://www.umaryland.edu/urecfit/fitness/exercise-videos/",
+      note:"Demonstração de bird dog. Estenda braço e perna opostos sem girar o quadril ou deixar o tronco perder estabilidade."
+    },
+    "Aperto de toalha":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/DlAJTL1BRac",
+      credit:"Rehab My Patient",license:"Player oficial do YouTube",
+      source:"https://www.youtube.com/watch?v=DlAJTL1BRac",
+      note:"Demonstração de aperto de toalha para a mão e a pegada. Faça uma contração confortável, sem apertar ao máximo e sem dor."
     }
   };
   const media=mediaByName[item[0]];
@@ -93,7 +145,7 @@ function openExerciseDemo(key){
     ? media.kind==="video"
       ? `<div class="demo-video-wrap"><video controls playsinline preload="metadata"><source src="${media.src}" type="${media.mime}">Seu navegador não conseguiu carregar este vídeo.</video></div>`
       : media.kind==="embed"
-        ? `<div class="demo-video-wrap demo-embed-wrap"><iframe src="${media.src}" title="Demonstração de agachamento sem carga — U.S. Marine Corps" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`
+        ? `<div class="demo-video-wrap demo-embed-wrap"><iframe src="${media.src}" title="Demonstração de ${item[0]}" loading="lazy" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
         : `<div class="demo-video-wrap demo-gif-wrap"><img src="${media.src}" alt="Demonstração animada de elevação de panturrilha" loading="lazy"></div>`
     : `<div class="demo-placeholder"><span>GUIA DE MOVIMENTO</span><b>Vídeo ainda não disponível para este exercício</b><p>Não vamos mostrar um vídeo de outro movimento como se fosse este. Use as orientações escritas abaixo.</p></div>`;
   const steps=[
@@ -103,7 +155,7 @@ function openExerciseDemo(key){
   ];
   const m=document.createElement("div");
   m.className="modal-backdrop";
-  m.innerHTML=`<section class="lesson-modal coach-lesson demo-video-modal"><button class="modal-close" id="closeDemo" aria-label="Fechar">×</button><span class="eyebrow">GUIA DE MOVIMENTO / MUSCULAÇÃO</span><h2>${item[0]}</h2><div class="demo-rep-count"><b>${item[1]}</b><span>REFERÊNCIA INICIAL · AJUSTE AO CONFORTO</span></div>${mediaMarkup}<div class="demo-media-credit">${media?`Mídia: <b>${media.credit}</b> · ${media.license} · <a href="${media.source}" target="_blank" rel="noopener noreferrer">Ver fonte</a>`:"Sem mídia validada para este exercício."}</div><div class="demo-caption"><b>OBSERVAÇÃO</b><p>${media?media.note:item[2]}</p></div><div class="demo-steps">${steps.map((s,i)=>`<div><span>0${i+1}</span><p>${s}</p></div>`).join("")}</div><div class="lesson-detail"><b>LEMBRETE</b><p>${item[2]} Se tiver dúvidas sobre a execução, peça orientação presencial a um profissional qualificado.</p></div></section>`;
+  m.innerHTML=`<section class="lesson-modal coach-lesson demo-video-modal"><button class="modal-close" id="closeDemo" aria-label="Fechar">×</button><span class="eyebrow">GUIA DE MOVIMENTO / MUSCULAÇÃO</span><h2>${item[0]}</h2><div class="demo-rep-count"><b>${item[1]}</b><span>REFERÊNCIA INICIAL · AJUSTE AO CONFORTO</span></div>${mediaMarkup}<div class="demo-media-credit">${media?`Mídia: <b>${media.credit}</b> · ${media.license} · <a href="${media.source}" target="_blank" rel="noopener noreferrer">Ver fonte</a>`:"Sem mídia validada para este exercício."}</div><div class="demo-caption"><b>OBSERVAÇÃO</b><p>${media?media.note:item[2]}</p></div><section class="demo-anatomy"><div><span>MÚSCULOS PRINCIPAIS</span><b>${exerciseInfo[item[0]]?.primary||"—"}</b></div><div><span>MÚSCULOS AUXILIARES</span><b>${exerciseInfo[item[0]]?.secondary||"—"}</b></div><div><span>O QUE O MOVIMENTO FAZ</span><p>${exerciseInfo[item[0]]?.action||item[2]}</p></div></section><div class="demo-steps">${steps.map((s,i)=>`<div><span>0${i+1}</span><p>${s}</p></div>`).join("")}</div><div class="lesson-detail"><b>LEMBRETE</b><p>${item[2]} Se tiver dúvidas sobre a execução, peça orientação presencial a um profissional qualificado.</p></div></section>`;
   document.body.append(m);
   const close=()=>{m.remove();document.removeEventListener("keydown",onKey);};
   const onKey=e=>{if(e.key==="Escape")close();};
