@@ -2,7 +2,8 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
-const MODEL_URL = new URL("./assets/instructor.glb?v=20261110-male-instructor-2", import.meta.url).href;\nconst SQUAT_MODEL_URL = new URL("./assets/quaternius/Regular_Male_FullBody.gltf?v=20261110-rigged-squat", import.meta.url).href;
+const MODEL_URL = new URL("./assets/instructor.glb?v=20261110-male-instructor-2", import.meta.url).href;
+const SQUAT_MODEL_URL = new URL("./assets/quaternius/Regular_Male_FullBody.gltf?v=20261110-rigged-squat", import.meta.url).href;
 
 function setStatus(host, message) {
   const status = host.querySelector(".fq-3d-status");
@@ -53,6 +54,9 @@ function createSquatRigged(model) {
       thighWorldQuaternion: worldQuaternion(thigh),
       calfWorldQuaternion: worldQuaternion(calf),
       footWorldQuaternion: worldQuaternion(foot),
+      thighLocalQuaternion: thigh.quaternion.clone(),
+      calfLocalQuaternion: calf.quaternion.clone(),
+      footLocalQuaternion: foot.quaternion.clone(),
       footWorldPosition: footPosition,
       upperLength: thighPosition.distanceTo(calfPosition),
       lowerLength: calfPosition.distanceTo(footPosition)
@@ -150,9 +154,9 @@ function createSquatRigged(model) {
     if (spine1 && baseSpine1) spine1.quaternion.copy(baseSpine1);
     if (spine2 && baseSpine2) spine2.quaternion.copy(baseSpine2);
     for (const leg of legs) {
-      leg.thigh.quaternion.copy(leg.thighWorldQuaternion);
-      leg.calf.quaternion.copy(leg.calfWorldQuaternion);
-      leg.foot.quaternion.copy(leg.footWorldQuaternion);
+      leg.thigh.quaternion.copy(leg.thighLocalQuaternion);
+      leg.calf.quaternion.copy(leg.calfLocalQuaternion);
+      leg.foot.quaternion.copy(leg.footLocalQuaternion);
     }
     model.updateMatrixWorld(true);
   }
