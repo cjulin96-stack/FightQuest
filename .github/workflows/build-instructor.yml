@@ -1,0 +1,63 @@
+name: Build FightQuest 3D instructor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/fightquest-export.ts"
+      - ".github/workflows/build-instructor.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-instructor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout FightQuest
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: fightquest
+
+      - name: Checkout pinned character generator
+        uses: actions/checkout@v4
+        with:
+          repository: olatunde85/3d-gen
+          ref: c0abe46261171ad3ec570b39beabe386669cae4d
+          path: ara
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ara/package-lock.json
+
+      - name: Install generator dependencies
+        working-directory: ara
+        run: npm ci
+
+      - name: Build CC0 character assets
+        working-directory: ara
+        run: npm run setup-assets
+
+      - name: Export the FightQuest instructor
+        working-directory: ara
+        run: |
+          cp ../fightquest/scripts/fightquest-export.ts scripts/fightquest-export.ts
+          npx tsx scripts/fightquest-export.ts
+
+      - name: Commit generated GLB
+        run: |
+          git -C fightquest config user.name "github-actions[bot]"
+          git -C fightquest config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C fightquest add assets/instructor.glb
+          if git -C fightquest diff --cached --quiet; then
+            echo "The instructor asset is already up to date."
+            exit 0
+          fi
+          git -C fightquest commit -m "Add generated 3D instructor model"
+          git -C fightquest push origin HEAD:main
