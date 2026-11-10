@@ -7,8 +7,13 @@ import { clipById } from '../src/core/anim/clips';
 import type { Clip } from '../src/core/anim/clips/types';
 import { planExport, runExport } from '../src/export';
 
-// Squat repetition: stand -> controlled descent -> brief hold -> stand.
+// Squat repetition: reuse the generator's validated crouch pose and blend it from/to idle.
 const smooth = (x: number) => { const t = Math.max(0, Math.min(1, x)); return t * t * (3 - 2 * t); };
+const idleClip = clipById.get('idle');
+const crouchClip = clipById.get('crouch');
+if (!idleClip || !crouchClip) throw new Error('Idle/crouch base clips are required for the squat.');
+const idlePose = idleClip.sample(0);
+const squatPose = crouchClip.sample(0);
 const squat: Clip = {
   id: 'squat',
   name: 'Squat repetition',
@@ -17,35 +22,13 @@ const squat: Clip = {
   loop: true,
   sample: (time) => {
     const phase = (time % 3.6) / 3.6;
-    const down = smooth(phase / 0.28);
-    const up = smooth((phase - 0.56) / 0.28);
-    const depth = phase < 0.28 ? down : phase < 0.56 ? 1 : phase < 0.84 ? 1 - up : 0;
-    const bend = (v: number) => v * depth;
+    const down = smooth(phase / 0.30);
+    const up = smooth((phase - 0.58) / 0.30);
+    const depth = phase < 0.30 ? down : phase < 0.58 ? 1 : phase < 0.88 ? 1 - up : 0;
     return {
-      bones: {
-        // Controlled forward torso lean, with the head kept close to neutral.
-        Spine: [bend(10), 0, 0],
-        Spine1: [bend(4), 0, 0],
-        Spine2: [bend(2), 0, 0],
-        Neck: [bend(-3), 0, 0],
-        Head: [bend(-2), 0, 0],
-        // Hip and knee flexion: positive thigh flexion, negative knee bend.
-        LeftUpLeg: [bend(76), 0, bend(2)],
-        RightUpLeg: [bend(76), 0, bend(-2)],
-        LeftLeg: [bend(-104), 0, 0],
-        RightLeg: [bend(-104), 0, 0],
-        // Keep the feet close to neutral instead of sharply pointing the toes.
-        LeftFoot: [bend(8), 0, 0],
-        RightFoot: [bend(8), 0, 0],
-        // Arms reach forward slightly for counterbalance.
-        LeftArm: [bend(30), 0, bend(5)],
-        RightArm: [bend(30), 0, bend(-5)],
-        LeftForeArm: [bend(48), 0, 0],
-        RightForeArm: [bend(48), 0, 0],
-      },
-      // Lower the pelvis with the squat and keep both feet planted.
-      root: { drop: 0.16 * depth, ground: true },
-      plant: { Left: 1, Right: 1 },
+      ...idlePose,
+      root: { ...idlePose.root, ground: true },
+      blend: { sample: squatPose, w: depth, ground: true },
     };
   },
 };
