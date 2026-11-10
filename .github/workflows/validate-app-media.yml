@@ -25,11 +25,11 @@ jobs:
       - name: Confirm video-based demo integration
         run: |
           grep -q 'function openExerciseDemo(key)' app.js
-          grep -q 'videos.pexels.com/video-files/6525515' app.js
+          grep -q 'https://www.dvidshub.net/video/embed/517502' app.js
           grep -q 'Muscle_Strengthening_at_Home_-_Push-ups.webm' app.js
           grep -q 'Bent-over_row_-_exercise_demonstration_video.webm' app.js
           grep -q 'Standing-calf-raises-2.gif' app.js
           ! grep -q 'instructor3d.js' index.html
-          grep -q 'app.js?v=20' index.html
+          grep -q 'app.js?v=22' index.html
           test -s assets/VIDEO-CREDITS.md
           echo "Video demonstrations, source credits, and app entry point are present."
