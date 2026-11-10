@@ -1,0 +1,38 @@
+FightQuest humanoid avatar inspection
+File bytes: 410388
+Nodes: 15
+Skins: 1
+Joints: 13
+Animation clips: Attack, Death, Hit, Idle, Run, Walk, Special
+
+JOINTS
+skin 0: 12 — kjw9f2
+skin 0: 11 — wjpg6d
+skin 0: 1 — zk9nfv
+skin 0: 0 — mapkus
+skin 0: 3 — nytevj
+skin 0: 2 — jmnxf4
+skin 0: 10 — ymp2ff
+skin 0: 5 — wf7nfp
+skin 0: 4 — av5fdb
+skin 0: 7 — cas6my
+skin 0: 6 — exdj4k
+skin 0: 9 — crv4bt
+skin 0: 8 — gu7d4g
+
+NAMED NODES
+0: mapkus
+1: zk9nfv
+2: jmnxf4
+3: nytevj
+4: av5fdb
+5: wf7nfp
+6: exdj4k
+7: cas6my
+8: gu7d4g
+9: crv4bt
+10: ymp2ff
+11: wjpg6d
+12: kjw9f2
+13: OfficeWorker
+14: b28bg2

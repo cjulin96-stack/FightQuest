@@ -1,0 +1,9 @@
+FightQuest humanoid avatar
+==========================
+Asset: OfficeWorker.glb
+Source: Gobkit free CC0 character library
+Model URL: https://gobkit.com/freebies/human015/OfficeWorker.glb
+Catalogue: https://gobkit.com/api/free
+License: CC0 1.0 Universal (public domain dedication).
+The source catalogue states that free-pack models may be copied,
+modified, redistributed, and used commercially without attribution.
