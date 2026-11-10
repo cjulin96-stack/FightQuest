@@ -103,3 +103,58 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 @keyframes guardArmsJoint{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
 @keyframes lungeTorsoJoint{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 @keyframes stepLegJoint{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(7px) rotate(5deg)}}
+
+
+/* FightQuest 1.3 — animação com articulações separadas */
+.coach-avatar .torso{transform-box:view-box;transform-origin:130px 170px}
+.coach-avatar .arm,.coach-avatar .leg,.coach-avatar .forearm,.coach-avatar .shin{transform-box:view-box;will-change:transform}
+.coach-avatar .arm-left{transform-origin:111px 94px}.coach-avatar .arm-right{transform-origin:149px 94px}
+.coach-avatar .forearm{transform-origin:91px 139px}
+.coach-avatar .leg-left{transform-origin:113px 198px}.coach-avatar .leg-right{transform-origin:147px 198px}
+.coach-avatar .shin{transform-origin:105px 255px}
+.coach-avatar.motion-squat .torso{animation:fqSquatBody 2.8s ease-in-out infinite}
+.coach-avatar.motion-squat .leg{animation:fqSquatThigh 2.8s ease-in-out infinite}
+.coach-avatar.motion-squat .shin{animation:fqSquatShin 2.8s ease-in-out infinite}
+.coach-avatar.motion-squat .arm{animation:fqSquatArms 2.8s ease-in-out infinite}
+.coach-avatar.motion-lunge .torso{animation:fqLungeTorso 2.8s ease-in-out infinite}
+.coach-avatar.motion-lunge .leg-left{animation:fqLungeFront 2.8s ease-in-out infinite}
+.coach-avatar.motion-lunge .leg-right{animation:fqLungeBack 2.8s ease-in-out infinite}
+.coach-avatar.motion-row .torso,.coach-avatar.motion-hinge .torso{animation:fqHinge 2.5s ease-in-out infinite}
+.coach-avatar.motion-row .arm{animation:fqRowArm 2.5s ease-in-out infinite}
+.coach-avatar.motion-row .forearm{animation:fqRowForearm 2.5s ease-in-out infinite}
+.coach-avatar.motion-curl .forearm{animation:fqCurl 2s ease-in-out infinite}
+.coach-avatar.motion-guard .arm{animation:fqGuard 2s ease-in-out infinite}
+.coach-avatar.motion-step .leg-left{animation:fqStep 1.7s ease-in-out infinite}
+.coach-avatar.motion-step .leg-right{animation:fqStep 1.7s ease-in-out infinite reverse}
+.coach-avatar.motion-stance .torso,.coach-avatar.motion-rhythm .torso{animation:fqBreath 3s ease-in-out infinite}
+.coach-avatar.motion-pushup .figure-floor,.coach-avatar.motion-kneepush .figure-floor{animation:fqPushup 2.5s ease-in-out infinite;transform-origin:130px 185px}
+.coach-avatar.motion-bridge .figure-floor{animation:fqBridge 2.5s ease-in-out infinite;transform-origin:130px 185px}
+.coach-avatar.motion-deadbug .floor-arm{animation:fqDeadArm 2.7s ease-in-out infinite}
+.coach-avatar.motion-deadbug .floor-leg{animation:fqDeadLeg 2.7s ease-in-out infinite}
+.coach-avatar.motion-birddog .figure-floor{animation:fqBirdDog 2.7s ease-in-out infinite;transform-origin:130px 185px}
+.coach-avatar.motion-calf .torso{animation:fqCalf 2s ease-in-out infinite}
+.coach-avatar.motion-grip .arm{animation:fqGrip 1.8s ease-in-out infinite}
+.coach-avatar.motion-mobility .arm{animation:fqMobility 3s ease-in-out infinite}
+.floor-avatar .coach-avatar{width:230px;height:270px}
+@keyframes fqSquatBody{0%,100%{transform:translateY(0)}45%,60%{transform:translateY(18px)}}
+@keyframes fqSquatThigh{0%,100%{transform:rotate(0)}45%,60%{transform:rotate(24deg)}}
+@keyframes fqSquatShin{0%,100%{transform:rotate(0)}45%,60%{transform:rotate(-20deg)}}
+@keyframes fqSquatArms{0%,100%{transform:rotate(0)}45%,60%{transform:rotate(-18deg)}}
+@keyframes fqLungeTorso{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}
+@keyframes fqLungeFront{0%,100%{transform:rotate(0)}50%{transform:rotate(35deg)}}
+@keyframes fqLungeBack{0%,100%{transform:rotate(0)}50%{transform:rotate(-25deg)}}
+@keyframes fqHinge{0%,100%{transform:rotate(0)}50%{transform:rotate(20deg)}}
+@keyframes fqRowArm{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
+@keyframes fqRowForearm{0%,100%{transform:rotate(0)}50%{transform:rotate(48deg)}}
+@keyframes fqCurl{0%,100%{transform:rotate(0)}50%{transform:rotate(-72deg)}}
+@keyframes fqGuard{0%,100%{transform:rotate(0)}50%{transform:rotate(-30deg)}}
+@keyframes fqStep{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
+@keyframes fqBreath{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes fqPushup{0%,100%{transform:translateY(0)}50%{transform:translateY(13px)}}
+@keyframes fqBridge{0%,100%{transform:translateY(8px) scaleY(.94)}50%{transform:translateY(-12px) scaleY(1.04)}}
+@keyframes fqDeadArm{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
+@keyframes fqDeadLeg{0%,100%{transform:rotate(0)}50%{transform:rotate(12deg)}}
+@keyframes fqBirdDog{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes fqCalf{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes fqGrip{0%,100%{transform:scale(1)}50%{transform:scale(.94)}}
+@keyframes fqMobility{0%,100%{transform:rotate(0)}50%{transform:rotate(-42deg)}}
