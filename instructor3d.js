@@ -230,6 +230,8 @@ async function mount(host) {
   try {
     if (exerciseType === "squat") {
       squatRig = createSquatHumanoid(scene);
+      camera.position.set(0, 1.18, 3.25);
+      camera.lookAt(0, 0.82, 0);
       host.classList.add("is-ready");
       setStatus(host, "Humanoide 3D carregado · agachamento com joelhos alinhados e pés apoiados.");
     } else {
