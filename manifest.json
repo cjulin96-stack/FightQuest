@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "FightQuest — Treino e Evolução",
+  "short_name": "FightQuest",
+  "description": "Seu painel de evolução para musculação e Muay Thai.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "icons": [
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
