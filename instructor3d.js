@@ -88,7 +88,6 @@ async function mount(host) {
       -center.z * fitScale
     );
     scene.add(model);
-    idleMotion = requestedName === "Idle";
     idleBaseY = model.position.y;
     idleBaseRotation = model.rotation.y;
     camera.position.set(0, 1.15, 3.1);
@@ -106,6 +105,7 @@ async function mount(host) {
       "motion-mobility": "Idle"
     };
     const requestedName = motionNames[host.dataset.motion] || "Idle";
+    idleMotion = requestedName === "Idle";
     const selectedClip = gltf.animations?.find(clip =>
       clip.name.toLowerCase() === requestedName.toLowerCase()
     ) || gltf.animations?.find(clip =>
