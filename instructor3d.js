@@ -57,6 +57,8 @@ async function mount(host) {
   let idleBaseY = 0;
   let idleBaseRotation = 0;
   let frame = 0;
+  let exerciseBones = [];
+  let exerciseType = "";
   const clock = new THREE.Clock();
 
   function resize() {
@@ -104,6 +106,23 @@ async function mount(host) {
       "motion-rhythm": "Walk",
       "motion-mobility": "Idle"
     };
+    exerciseType = (host.dataset.motion || "").startsWith("exercise-") ? host.dataset.motion.slice(9) : "";
+    if (exerciseType) {
+      const boneMap = new Map();
+      model.traverse(object => { if (object.isBone) boneMap.set(object.name.toLowerCase().replace(/[^a-z0-9]/g, ""), object); });
+      const pick = (...names) => names.map(n => boneMap.get(n.toLowerCase().replace(/[^a-z0-9]/g, ""))).find(Boolean);
+      const defs = [
+        ["hips", ["Hips"]],
+        ["spine", ["Spine","Spine1","Spine2"]],
+        ["leftThigh", ["LeftUpLeg"]], ["rightThigh", ["RightUpLeg"]],
+        ["leftShin", ["LeftLeg"]], ["rightShin", ["RightLeg"]],
+        ["leftArm", ["LeftArm"]], ["rightArm", ["RightArm"]],
+        ["leftForearm", ["LeftForeArm"]], ["rightForearm", ["RightForeArm"]],
+        ["leftFoot", ["LeftFoot"]], ["rightFoot", ["RightFoot"]],
+        ["neck", ["Neck"]]
+      ];
+      exerciseBones = defs.map(([key,names]) => ({key,bone:pick(...names)})).filter(x=>x.bone).map(x=>({key:x.key,bone:x.bone,base:x.bone.rotation.clone()}));
+    }
     const requestedName = motionNames[host.dataset.motion] || "Idle";
     idleMotion = requestedName === "Idle";
     const selectedClip = gltf.animations?.find(clip =>
@@ -131,6 +150,31 @@ async function mount(host) {
     frame = requestAnimationFrame(animate);
     const delta = Math.min(clock.getDelta(), 0.05);
     if (mixer) mixer.update(delta);
+    if (model && exerciseType && exerciseBones.length) {
+      const phase = (clock.elapsedTime % 3.2) / 3.2;
+      const down = phase < 0.42 ? (0.5 - 0.5 * Math.cos(Math.PI * phase / 0.42)) : phase < 0.58 ? 1 : (0.5 + 0.5 * Math.cos(Math.PI * (phase - 0.58) / 0.42));
+      const hold = Math.max(0, Math.sin(Math.PI * Math.min(1, phase / 0.42)));
+      const values = {
+        squat: {leftThigh:0.82,rightThigh:0.82,leftShin:-1.18,rightShin:-1.18,spine:-0.12,leftArm:0.16,rightArm:0.16},
+        pushup: {spine:0.10,leftThigh:0.02,rightThigh:0.02,leftArm:-0.38,rightArm:-0.38,leftForearm:-0.65,rightForearm:-0.65},
+        row: {leftArm:-0.48,rightArm:-0.48,leftForearm:-0.72,rightForearm:-0.72,spine:0.12},
+        "glute-bridge": {leftThigh:0.32,rightThigh:0.32,leftShin:-0.72,rightShin:-0.72,spine:-0.16},
+        "calf-raise": {leftFoot:-0.28,rightFoot:-0.28},
+        "dead-bug": {leftThigh:0.65,rightThigh:0.65,leftShin:-0.55,rightShin:-0.55,leftArm:0.35,rightArm:0.35},
+        lunge: {leftThigh:0.65,rightThigh:-0.22,leftShin:-0.85,rightShin:0.12,spine:-0.08},
+        hinge: {leftThigh:0.42,rightThigh:0.42,spine:0.32,leftArm:0.18,rightArm:0.18},
+        curl: {leftArm:-0.22,rightArm:-0.22,leftForearm:-1.0,rightForearm:-1.0},
+        "bird-dog": {leftThigh:-0.24,rightArm:0.45,rightThigh:0.0,leftArm:0.0,spine:0.06},
+        isometric: {leftArm:0.22,rightArm:0.22,leftForearm:-0.45,rightForearm:-0.45}
+      };
+      const pose = values[exerciseType] || values.squat;
+      for (const item of exerciseBones) {
+        const amount = pose[item.key] || 0;
+        item.bone.rotation.x = item.base.x + amount * down;
+      }
+      const hips = exerciseBones.find(x=>x.key==="hips");
+      if (hips && ["squat","lunge","glute-bridge"].includes(exerciseType)) hips.bone.rotation.x = hips.base.x + (exerciseType==="glute-bridge" ? -0.18 : 0.04) * down;
+    }
     if (model && idleMotion) {
       const t = clock.elapsedTime;
       model.position.y = idleBaseY + Math.sin(t * 2.1) * 0.012;
