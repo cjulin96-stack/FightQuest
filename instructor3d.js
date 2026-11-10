@@ -1,6 +1,20 @@
 // FightQuest 3D viewer foundation. The instructor GLB is loaded only after it exists.
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+let THREE;
+let GLTFLoader;
+let enginePromise;
+
+async function ensureEngine() {
+  if (!enginePromise) {
+    enginePromise = Promise.all([
+      import("three"),
+      import("three/addons/loaders/GLTFLoader.js")
+    ]).then(([threeModule, loaderModule]) => {
+      THREE = threeModule;
+      GLTFLoader = loaderModule.GLTFLoader;
+    });
+  }
+  return enginePromise;
+}
 
 const MODEL_URL = "./assets/instructor.glb";
 const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
@@ -15,6 +29,15 @@ async function mount(host) {
   host.dataset.mounted = "true";
   const viewport = host.querySelector(".fq-3d-viewport");
   if (!viewport) return;
+
+  try {
+    await ensureEngine();
+  } catch (error) {
+    host.classList.add("is-error");
+    setStatus(host, "Não foi possível iniciar o motor 3D. Confira a conexão e recarregue a página.");
+    console.error("[FightQuest 3D] Falha ao carregar Three.js:", error);
+    return;
+  }
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0d1725);
