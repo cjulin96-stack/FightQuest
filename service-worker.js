@@ -1,4 +1,4 @@
-const CACHE = "fightquest-shell-v26";
+const CACHE = "fightquest-shell-v27";
 const FILES = ["./","./index.html","./style.css","./app.js","./instructor3d.js","./manifest.json","./icons/icon.svg"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
