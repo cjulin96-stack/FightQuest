@@ -3,10 +3,11 @@
 As mídias abaixo são carregadas diretamente de suas páginas de origem. O FightQuest não reivindica autoria sobre elas.
 
 ## Agachamento livre
-- Vídeo: FitnessScape, via Wikimedia Commons
-- Página da mídia: https://commons.wikimedia.org/wiki/File:Squat_-_exercise_demonstration_video.webm
-- Licença: Creative Commons Attribution 3.0 Unported (CC BY 3.0) — https://creativecommons.org/licenses/by/3.0/
-- Nota: vídeo horizontal 1280 × 720, com plano mais aberto; demonstra agachamento com carga, enquanto o treino FightQuest usa a versão sem carga.
+- Vídeo: U.S. Marine Corps, disponibilizado pelo DVIDS
+- Página da mídia: https://www.dvidshub.net/video/517502/body-weight-squat
+- Crédito indicado pelo DVIDS: MAJ Joshua Pena / vídeo por Cpl. Amber Jennings
+- Licença indicada pelo DVIDS: domínio público
+- Nota: demonstra agachamento com o peso do próprio corpo, sem barra ou halteres. Incorporado pelo player oficial DVIDS.
 
 
 ## Flexão
