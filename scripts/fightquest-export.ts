@@ -75,15 +75,16 @@ if (missing.length) throw new Error(`Missing safe animation clips: ${missing.joi
 const lib = await nodeLibrary();
 const params: HumanParams = {
   ...DEFAULT_PARAMS,
-  name: 'FightQuest_Instructor',
+  name: 'FightQuest_Instructor_Male',
   seed: 20261110,
+  gender: 1,
   age: 0.5,
   muscle: 0.58,
   weight: 0.5,
   height: 0.55,
   proportions: 0.58,
   outfit: 'none',
-  top: 'tank_top',
+  top: 'oversized_tee',
   bottom: 'cargo_shorts',
   shoes: 'sneakers',
   hair: 'short02',
@@ -102,7 +103,7 @@ const params: HumanParams = {
   speechShapes: false,
   expression: 'neutral',
   garmentStyles: {
-    tank_top: { pattern: 'solid', color: '#263342' },
+    oversized_tee: { pattern: 'solid', color: '#263342' },
     cargo_shorts: { pattern: 'solid', color: '#141b26' },
     sneakers: { pattern: 'solid', color: '#e04444', color2: '#171c26' },
   },
