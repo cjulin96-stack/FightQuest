@@ -1,129 +1,151 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/loaders/GLTFLoader.js";
 
-/* FightQuest 2.0: personagem humanoide 3D procedural com hierarquia articulada.
-   Sem modelo externo: geometria, materiais e animação são criados no navegador. */
-const stages = new WeakMap();
+/*
+ FightQuest 2.1
+ Real skinned humanoid GLB (MakeHuman / MPFB2, CC0) instead of the old
+ capsule-and-sphere character. The source model is fully clothed.
+ The bundled GLB includes idle/walk/run/wave clips; selected strength
+ motions use restrained skeletal pose cycles on its real 53-bone rig.
+*/
+const MODEL_URL="https://cdn.jsdelivr.net/gh/kunalkushwaha/vsim@main/packages/assets/library/suited.glb";
+const stages=new WeakMap();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function capsule(radius,length,material){
-  return new THREE.Mesh(new THREE.CapsuleGeometry(radius,length,5,10),material);
-}
-function buildAvatar(host){
+
+function makeStage(host){
   if(stages.has(host)) return;
-  const width=Math.max(220,host.clientWidth||300),height=Math.max(260,host.clientHeight||340);
+  const w=Math.max(220,host.clientWidth||300),h=Math.max(280,host.clientHeight||340);
   const scene=new THREE.Scene();
   scene.background=new THREE.Color(0x080d16);
-  const camera=new THREE.PerspectiveCamera(34,width/height,.1,100);
-  camera.position.set(3.6,2.25,5.7);camera.lookAt(0,1.05,0);
-  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.65));
-  renderer.setSize(width,height);renderer.outputColorSpace=THREE.SRGBColorSpace;
+  const camera=new THREE.PerspectiveCamera(34,w/h,.1,100);
+  camera.position.set(0,1.15,4.5);camera.lookAt(0,1.02,0);
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"low-power"});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.35));
+  renderer.setSize(w,h);renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  host.querySelector(".fq3d-loading")?.remove();host.prepend(renderer.domElement);
-  const hemi=new THREE.HemisphereLight(0xbad7ff,0x111522,2.1);scene.add(hemi);
-  const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(3,5,4);key.castShadow=true;scene.add(key);
-  const rim=new THREE.PointLight(0xff294d,28,8);rim.position.set(-2,2.3,-1);scene.add(rim);
-  const fill=new THREE.PointLight(0x29d9df,12,7);fill.position.set(2,1.2,3);scene.add(fill);
-  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,64),new THREE.MeshStandardMaterial({color:0x101827,roughness:.8,metalness:.15}));
-  floor.rotation.x=-Math.PI/2;floor.position.y=-.04;floor.receiveShadow=true;scene.add(floor);
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.05,.012,8,80),new THREE.MeshBasicMaterial({color:0xe52c4c}));
-  ring.rotation.x=Math.PI/2;ring.position.y=-.025;ring.scale.set(1,.72,1);scene.add(ring);
-  const skin=new THREE.MeshStandardMaterial({color:0xc5a18c,roughness:.72});
-  const skinLight=new THREE.MeshStandardMaterial({color:0xd6b39c,roughness:.68});
-  const shorts=new THREE.MeshStandardMaterial({color:0x9f1833,roughness:.65,metalness:.08});
-  const top=new THREE.MeshStandardMaterial({color:0x26384b,roughness:.7});
-  const trim=new THREE.MeshStandardMaterial({color:0xf13a58,metalness:.35,roughness:.35});
-  const dark=new THREE.MeshStandardMaterial({color:0x18212e,roughness:.65});
-  const root=new THREE.Group();scene.add(root);
-  const torso=new THREE.Group();torso.position.y=1.34;root.add(torso);
-  const chest=capsule(.255,.48,top);chest.position.y=.22;chest.castShadow=true;torso.add(chest);
-  const waist=capsule(.205,.18,skin);waist.position.y=-.08;torso.add(waist);
-  const belt=new THREE.Mesh(new THREE.CylinderGeometry(.205,.205,.075,24),trim);belt.position.y=.01;torso.add(belt);
-  const neck=capsule(.075,.1,skinLight);neck.position.y=.56;torso.add(neck);
-  const head=new THREE.Group();head.position.y=.72;torso.add(head);
-  const skull=new THREE.Mesh(new THREE.SphereGeometry(.145,24,20),skinLight);skull.scale.set(.88,1.12,.92);skull.castShadow=true;head.add(skull);
-  const hair=new THREE.Mesh(new THREE.SphereGeometry(.148,20,12,0,Math.PI*2,0,Math.PI*.48),dark);hair.position.y=.055;head.add(hair);
-  const faceLine=new THREE.Mesh(new THREE.BoxGeometry(.11,.012,.012),dark);faceLine.position.set(0,-.02,.128);head.add(faceLine);
-  const shoulders=[];
-  function limb(parent,upperLen,lowerLen,upperRadius,lowerRadius,materialUpper=skin,materialLower=skinLight){
-    const pivot=new THREE.Group();parent.add(pivot);
-    const upper=capsule(upperRadius,upperLen*.72,materialUpper);upper.position.y=-upperLen*.36;upper.castShadow=true;pivot.add(upper);
-    const joint=new THREE.Mesh(new THREE.SphereGeometry(upperRadius*.92,14,12),materialLower);joint.position.y=-upperLen*.72;pivot.add(joint);
-    const elbow=new THREE.Group();elbow.position.y=-upperLen*.72;pivot.add(elbow);
-    const lower=capsule(lowerRadius,lowerLen*.78,materialLower);lower.position.y=-lowerLen*.39;lower.castShadow=true;elbow.add(lower);
-    const hand=new THREE.Mesh(new THREE.SphereGeometry(lowerRadius*1.05,14,12),skinLight);hand.position.y=-lowerLen*.8;elbow.add(hand);
-    return {pivot,elbow};
-  }
-  for(const side of [-1,1]){
-    const shoulder=new THREE.Group();shoulder.position.set(side*.29,.43,0);torso.add(shoulder);
-    const arm=limb(shoulder,.34,.31,.09,.073);shoulders.push({side,...arm});
-  }
-  const hips=[];
-  for(const side of [-1,1]){
-    const hip=new THREE.Group();hip.position.set(side*.115,-.18,0);root.add(hip);
-    const upper=capsule(.115,.34,skin);upper.position.y=-.17;upper.castShadow=true;hip.add(upper);
-    const knee=new THREE.Group();knee.position.y=-.34;hip.add(knee);
-    const kneecap=new THREE.Mesh(new THREE.SphereGeometry(.105,16,12),skinLight);knee.add(kneecap);
-    const shin=capsule(.082,.34,skinLight);shin.position.y=-.18;shin.castShadow=true;knee.add(shin);
-    const foot=new THREE.Mesh(new THREE.BoxGeometry(.16,.085,.29),dark);foot.position.set(0,-.37,.075);foot.castShadow=true;knee.add(foot);
-    hips.push({side,hip,knee});
-  }
-  // Red wrist bands and shoulder definition make the silhouette readable.
-  shoulders.forEach(({side,pivot})=>{const band=new THREE.Mesh(new THREE.TorusGeometry(.077,.018,8,20),trim);band.position.set(0,-.32,0);pivot.add(band);});
-  const state={host,scene,camera,renderer,root,torso,head,shoulders,hips,ring,raf:0,last:0,angle:0,motion:host.dataset.motion||"motion-stance"};
+  host.querySelector(".fq3d-loading")?.remove();
+  host.prepend(renderer.domElement);
+
+  scene.add(new THREE.HemisphereLight(0xc9dcff,0x14101b,2.0));
+  const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(2.5,5,4);key.castShadow=true;scene.add(key);
+  const rim=new THREE.PointLight(0xff294d,20,8);rim.position.set(-2,2.3,-1);scene.add(rim);
+  const fill=new THREE.PointLight(0x29d9df,8,7);fill.position.set(2,1.3,3);scene.add(fill);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.1,56),new THREE.MeshStandardMaterial({color:0x101827,roughness:.85,metalness:.08}));
+  floor.rotation.x=-Math.PI/2;floor.position.y=-.025;floor.receiveShadow=true;scene.add(floor);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.05,.012,8,72),new THREE.MeshBasicMaterial({color:0xe52c4c}));
+  ring.rotation.x=Math.PI/2;ring.position.y=-.015;ring.scale.set(1,.72,1);scene.add(ring);
+
+  const characterRoot=new THREE.Group();scene.add(characterRoot);
+  const state={host,scene,camera,renderer,characterRoot,ring,raf:0,angle:0,motion:host.dataset.motion||"motion-stance",ready:false,mixer:null,actions:[],bones:new Map(),base:new Map(),last:0};
   stages.set(host,state);
-  const resize=()=>{const w=Math.max(220,host.clientWidth),h=Math.max(260,host.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);};
-  state.resize=resize;
-  const observer=new ResizeObserver(resize);observer.observe(host);state.observer=observer;
-  const animate=(time)=>{
+
+  const resize=()=>{const nw=Math.max(220,host.clientWidth),nh=Math.max(280,host.clientHeight);camera.aspect=nw/nh;camera.updateProjectionMatrix();renderer.setSize(nw,nh);};
+  const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(host);state.resizeObserver=resizeObserver;
+
+  const loader=new GLTFLoader();
+  loader.load(MODEL_URL,gltf=>{
+    if(!host.isConnected)return;
+    const model=gltf.scene;
+    const box=new THREE.Box3().setFromObject(model),size=new THREE.Vector3(),center=new THREE.Vector3();
+    box.getSize(size);box.getCenter(center);
+    const scale=2.02/Math.max(size.y,0.01);
+    model.scale.setScalar(scale);
+    model.position.set(-center.x*scale,-box.min.y*scale,-center.z*scale);
+    model.rotation.y=-Math.PI/2; // source character faces +X; stage camera faces +Z
+    model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material){o.material.roughness=Math.max(.55,o.material.roughness??.7);}}});
+    characterRoot.add(model);
+    model.traverse(o=>{if(o.isBone){const n=o.name.toLowerCase();state.bones.set(n,o);state.base.set(n,o.quaternion.clone());}});
+    state.mixer=new THREE.AnimationMixer(model);
+    const clip=(name)=>gltf.animations.find(c=>c.name.toLowerCase().includes(name));
+    const idle=clip("idle"),walk=clip("walk");
+    if(idle){const a=state.mixer.clipAction(idle);a.play();state.actions.push(a);}
+    state.clips={idle,walk};
+    state.ready=true;
+    host.querySelector(".fq3d-loading")?.remove();
+    host.querySelector(".fq3d-caption")?.textContent="INSTRUTOR 3D RIGADO · MODELO CC0";
+    setMotion(state.motion,state);
+  },undefined,()=>{
+    const loading=host.querySelector(".fq3d-loading");
+    if(loading)loading.textContent="MODELO 3D INDISPONÍVEL · VERIFIQUE A CONEXÃO";
+  });
+
+  const animate=(ms)=>{
     state.raf=requestAnimationFrame(animate);
-    const t=time*.001,phase=t*1.45;
-    const {motion}=state;
-    state.root.position.y=0;state.root.rotation.set(0,0,0);
-    state.torso.rotation.set(0,0,0);state.head.rotation.set(0,0,0);
-    state.shoulders.forEach(({side,pivot,elbow})=>{pivot.rotation.set(0,0,side*.04);elbow.rotation.set(0,0,0);});
-    state.hips.forEach(({hip,knee})=>{hip.rotation.set(0,0,0);knee.rotation.set(0,0,0);});
+    const dt=state.last?Math.min((ms-state.last)/1000,.05):0;state.last=ms;
+    const t=ms*.001,phase=t*1.55,wave=(Math.sin(phase)+1)*.5;
+    if(state.mixer)state.mixer.update(dt);
     state.ring.rotation.z=t*.12;
-    const wave=Math.sin(phase)*.5+.5;
-    if(motion.includes("squat")){
-      const bend=wave*.72;state.root.position.y=-bend*.2;
-      state.hips.forEach(({side,hip,knee})=>{hip.rotation.x=-bend*.78;knee.rotation.x=bend*1.18;});
-      state.torso.rotation.x=bend*.16;
-      state.shoulders.forEach(({side,pivot,elbow})=>{pivot.rotation.x=-.55;pivot.rotation.z=side*.12;elbow.rotation.x=-.35;});
-    }else if(motion.includes("lunge")){
-      state.hips.forEach(({side,hip,knee})=>{hip.rotation.x=side===1?-.42*wave:.12;knee.rotation.x=side===1?.78*wave:0;});
-      state.torso.rotation.x=-.08*wave;
-    }else if(motion.includes("calf")){
-      state.root.position.y=.055*wave;
-      state.hips.forEach(({knee})=>{knee.rotation.x=0;});
-    }else if(motion.includes("bridge")){
-      state.root.position.y=.22*wave;state.torso.rotation.x=-.15;
-      state.hips.forEach(({hip,knee})=>{hip.rotation.x=-.85;knee.rotation.x=1.1;});
-    }else if(motion.includes("pushup")||motion.includes("deadbug")||motion.includes("birddog")){
-      state.root.rotation.z=-Math.PI/2;state.root.position.y=.75;
-      state.torso.rotation.x=motion.includes("deadbug")?Math.sin(phase)*.12:0;
-      state.shoulders.forEach(({side,pivot,elbow})=>{pivot.rotation.z=side*.18;pivot.rotation.x=-.55+wave*.12;elbow.rotation.x=-.25;});
-      state.hips.forEach(({hip,knee})=>{hip.rotation.x=motion.includes("deadbug")?Math.sin(phase+hip.position.x)*.22:0;knee.rotation.x=motion.includes("deadbug")?.32:0;});
-    }else if(motion.includes("hinge")||motion.includes("row")||motion.includes("curl")){
-      state.torso.rotation.x=.25+.08*Math.sin(phase);
-      state.shoulders.forEach(({side,pivot,elbow})=>{pivot.rotation.x=motion.includes("row")?-.8+wave*.18:-.35;pivot.rotation.z=side*.08;elbow.rotation.x=motion.includes("curl")?-.9+wave*.55:-.45;});
-      state.hips.forEach(({hip})=>{hip.rotation.x=-.22;});
-    }else if(motion.includes("guard")||motion.includes("stance")||motion.includes("step")||motion.includes("rhythm")||motion.includes("mobility")){
-      state.shoulders.forEach(({side,pivot,elbow})=>{pivot.rotation.x=-.7;pivot.rotation.z=side*.16;elbow.rotation.x=-.9;});
-      state.root.position.x=motion.includes("step")?.045*Math.sin(phase):0;
-      state.root.rotation.y=motion.includes("step")?.07*Math.sin(phase):0;
-      state.torso.rotation.z=.025*Math.sin(phase);
-    }
+    if(state.ready)applyPose(state,wave,phase);
     renderer.render(scene,camera);
   };
   state.raf=requestAnimationFrame(animate);
-  // Drag horizontally to orbit the instructor; vertical drag adjusts camera elevation.
-  let dragging=false,px=0,py=0;
-  renderer.domElement.addEventListener("pointerdown",e=>{dragging=true;px=e.clientX;py=e.clientY;renderer.domElement.setPointerCapture(e.pointerId);});
-  renderer.domElement.addEventListener("pointermove",e=>{if(!dragging)return;const dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;state.angle+=dx*.008;camera.position.x=Math.sin(state.angle)*6;camera.position.z=Math.cos(state.angle)*6;camera.position.y=clamp(camera.position.y-dy*.012,1.2,3.5);camera.lookAt(0,1.05,0);});
-  renderer.domElement.addEventListener("pointerup",()=>dragging=false);
-  renderer.domElement.addEventListener("pointercancel",()=>dragging=false);
+
+  let drag=false,px=0;
+  renderer.domElement.addEventListener("pointerdown",e=>{drag=true;px=e.clientX;renderer.domElement.setPointerCapture(e.pointerId);});
+  renderer.domElement.addEventListener("pointermove",e=>{if(!drag)return;const dx=e.clientX-px;px=e.clientX;state.angle+=dx*.008;characterRoot.rotation.y=-Math.PI/2+state.angle;});
+  renderer.domElement.addEventListener("pointerup",()=>drag=false);
+  renderer.domElement.addEventListener("pointercancel",()=>drag=false);
 }
-function scan(){document.querySelectorAll(".fq3d-stage").forEach(buildAvatar);}
-const observer=new MutationObserver(scan);
-observer.observe(document.documentElement,{childList:true,subtree:true});
-scan();
+
+function findBone(state,...names){for(const n of names){const b=state.bones.get(n);if(b)return b;}return null;}
+function setBone(state,names,x=0,y=0,z=0){
+  const b=findBone(state,...names);if(!b)return;
+  const key=b.name.toLowerCase(),base=state.base.get(key);if(!base)return;
+  const offset=new THREE.Quaternion().setFromEuler(new THREE.Euler(x,y,z,"XYZ"));
+  b.quaternion.copy(base).multiply(offset);
+}
+function resetPose(state){for(const [name,b] of state.bones){const q=state.base.get(name);if(q)b.quaternion.copy(q);}}
+function setMotion(motion,state){
+  state.motion=motion||"motion-stance";
+  if(!state.ready)return;
+  state.actions.forEach(a=>a.stop());state.actions=[];
+  state.characterRoot.rotation.set(0,-Math.PI/2,0);
+  if(state.mixer)state.mixer.stopAllAction();
+  const wantsWalk=state.motion.includes("step");
+  const chosen=wantsWalk?state.clips?.walk:state.clips?.idle;
+  if(chosen&&state.mixer){const a=state.mixer.clipAction(chosen);a.reset().play();state.actions=[a];}
+  else resetPose(state);
+}
+function applyPose(state,wave,phase){
+  const m=state.motion;
+  if(m.includes("step")||m.includes("stance")||m.includes("rhythm")||m.includes("mobility"))return;
+  // Keep the source rig's skin weights and joint hierarchy; only rotate named joints.
+  // This is a restrained study animation, not a substitute for in-person coaching.
+  if(state.actions.length)state.actions.forEach(a=>a.stop());
+  resetPose(state);
+  if(m.includes("squat")){
+    const bend=.52*wave;
+    setBone(state,["thigh_l"],-.42*bend);setBone(state,["thigh_r"],-.42*bend);
+    setBone(state,["calf_l"],.92*bend);setBone(state,["calf_r"],.92*bend);
+    setBone(state,["spine_02","spine_01"],.13*bend);
+    setBone(state,["upperarm_l"],-.18);setBone(state,["upperarm_r"],-.18);
+  }else if(m.includes("lunge")){
+    setBone(state,["thigh_l"],-.48*wave);setBone(state,["calf_l"],.78*wave);
+    setBone(state,["thigh_r"],.12*wave);setBone(state,["spine_02","spine_01"],.08*wave);
+  }else if(m.includes("calf")){
+    setBone(state,["foot_l"],-.22*wave);setBone(state,["foot_r"],-.22*wave);
+  }else if(m.includes("hinge")||m.includes("row")){
+    setBone(state,["spine_02","spine_01"],.26+.05*Math.sin(phase));
+    setBone(state,["thigh_l"],-.10);setBone(state,["thigh_r"],-.10);
+    if(m.includes("row")){
+      setBone(state,["upperarm_l"],-.62);setBone(state,["upperarm_r"],-.62);
+      setBone(state,["lowerarm_l"],.52+.18*wave);setBone(state,["lowerarm_r"],.52+.18*wave);
+    }
+  }else if(m.includes("curl")){
+    setBone(state,["upperarm_l"],-.12);setBone(state,["upperarm_r"],-.12);
+    setBone(state,["lowerarm_l"],-1.05*wave);setBone(state,["lowerarm_r"],-1.05*wave);
+  }else if(m.includes("guard")){
+    setBone(state,["upperarm_l"],-.72);setBone(state,["upperarm_r"],-.72);
+    setBone(state,["lowerarm_l"],-1.05);setBone(state,["lowerarm_r"],-1.05);
+  }else if(m.includes("pushup")||m.includes("kneepush")){
+    setBone(state,["upperarm_l"],-.28-.12*wave);setBone(state,["upperarm_r"],-.28-.12*wave);
+    setBone(state,["lowerarm_l"],-.65+.28*wave);setBone(state,["lowerarm_r"],-.65+.28*wave);
+  }else if(m.includes("bridge")||m.includes("deadbug")||m.includes("birddog")){
+    setBone(state,["thigh_l"],-.25*wave);setBone(state,["thigh_r"],-.25*wave);
+    setBone(state,["upperarm_l"],-.18*wave);setBone(state,["upperarm_r"],-.18*wave);
+  }else if(m.includes("grip")){
+    setBone(state,["hand_l"],.08*Math.sin(phase));setBone(state,["hand_r"],.08*Math.sin(phase));
+  }
+}
+function scan(){document.querySelectorAll(".fq3d-stage").forEach(makeStage);}
+const observer=new MutationObserver(scan);observer.observe(document.documentElement,{childList:true,subtree:true});scan();
