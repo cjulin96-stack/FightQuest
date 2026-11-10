@@ -2,7 +2,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
-const MODEL_URL = new URL("./assets/instructor.glb", import.meta.url).href;
+const MODEL_URL = new URL("./assets/instructor.glb?v=20261110-male-instructor-2", import.meta.url).href;
 
 function setStatus(host, message) {
   const status = host.querySelector(".fq-3d-status");
