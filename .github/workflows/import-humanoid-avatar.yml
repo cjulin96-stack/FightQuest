@@ -1,0 +1,85 @@
+name: Import FightQuest humanoid avatar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-humanoid-avatar.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-avatar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout FightQuest
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download CC0 humanoid GLB
+        run: |
+          mkdir -p assets
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://gobkit.com/freebies/human015/OfficeWorker.glb" \
+            --output assets/office-worker.glb
+          test -s assets/office-worker.glb
+          ls -lh assets/office-worker.glb
+
+      - name: Inspect GLB skeleton and animation clips
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const b = fs.readFileSync('assets/office-worker.glb');
+          if (b.toString('utf8', 0, 4) !== 'glTF') throw new Error('Invalid GLB header');
+          const jsonLength = b.readUInt32LE(12);
+          const jsonType = b.readUInt32LE(16);
+          if (jsonType !== 0x4e4f534a) throw new Error('Missing GLB JSON chunk');
+          const gltf = JSON.parse(b.toString('utf8', 20, 20 + jsonLength).trim());
+          const names = (gltf.nodes || []).map((n, i) => n.name ? `${i}: ${n.name}` : null).filter(Boolean);
+          const joints = (gltf.skins || []).flatMap((skin, skinIndex) =>
+            (skin.joints || []).map(i => `skin ${skinIndex}: ${i} — ${gltf.nodes?.[i]?.name || '(unnamed)'}`)
+          );
+          const clips = (gltf.animations || []).map(a => a.name || '(unnamed)');
+          const report = [
+            'FightQuest humanoid avatar inspection',
+            `File bytes: ${b.length}`,
+            `Nodes: ${(gltf.nodes || []).length}`,
+            `Skins: ${(gltf.skins || []).length}`,
+            `Joints: ${joints.length}`,
+            `Animation clips: ${clips.join(', ') || 'none'}`,
+            '',
+            'JOINTS',
+            ...joints,
+            '',
+            'NAMED NODES',
+            ...names
+          ].join('\n') + '\n';
+          fs.writeFileSync('assets/office-worker-rig-report.txt', report);
+          console.log(report);
+          NODE
+
+      - name: Record CC0 source
+        run: |
+          cat > assets/OFFICE-WORKER-LICENSE.txt <<'EOF'
+          FightQuest humanoid avatar
+          ==========================
+          Asset: OfficeWorker.glb
+          Source: Gobkit free CC0 character library
+          Model URL: https://gobkit.com/freebies/human015/OfficeWorker.glb
+          Catalogue: https://gobkit.com/api/free
+          License: CC0 1.0 Universal (public domain dedication).
+          The source catalogue states that free-pack models may be copied,
+          modified, redistributed, and used commercially without attribution.
+          EOF
+
+      - name: Commit downloaded avatar and rig report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/office-worker.glb assets/office-worker-rig-report.txt assets/OFFICE-WORKER-LICENSE.txt
+          git commit -m "Import CC0 humanoid avatar for FightQuest"
+          git push origin HEAD:main
