@@ -21,7 +21,15 @@ async function mount(host) {
   const camera = new THREE.PerspectiveCamera( thirty(), 1, 0.1, 100);
   camera.position.set(0, 1.35, 3.4);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  } catch (error) {
+    host.classList.add("is-error");
+    setStatus(host, "Este navegador não conseguiu iniciar o WebGL. Atualize o navegador e tente abrir a demonstração novamente.");
+    console.warn("[FightQuest 3D] WebGL indisponível:", error);
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -70,9 +78,13 @@ async function mount(host) {
     if (!Number.isFinite(maxDim) || maxDim < 0.2 || maxDim > 10) {
       throw new Error("O arquivo não parece conter um modelo humano em escala válida.");
     }
-    model.position.sub(center);
-    model.position.y += size.y / 2;
-    model.scale.setScalar(1.65 / size.y);
+    const fitScale = 1.65 / size.y;
+    model.scale.setScalar(fitScale);
+    model.position.set(
+      -center.x * fitScale,
+      -bounds.min.y * fitScale,
+      -center.z * fitScale
+    );
     scene.add(model);
     camera.position.set(0, 1.15, 3.1);
     camera.lookAt(0, 0.85, 0);
@@ -105,7 +117,8 @@ async function mount(host) {
       : "Modelo humano carregado. As animações ainda não estão disponíveis neste arquivo.");
   } catch (error) {
     console.info("[FightQuest 3D] Modelo ainda não disponível:", error.message);
-    setStatus(host, "Base do visualizador pronta. O arquivo do instrutor humano ainda precisa ser integrado; nenhum boneco provisório será exibido.");
+    host.classList.add("is-error");
+    setStatus(host, "Não foi possível carregar o modelo 3D. Verifique a conexão e tente recarregar a página.");
   }
 
   function animate() {
