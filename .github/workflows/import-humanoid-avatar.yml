@@ -36,28 +36,77 @@ jobs:
           const b = fs.readFileSync('assets/office-worker.glb');
           if (b.toString('utf8', 0, 4) !== 'glTF') throw new Error('Invalid GLB header');
           const jsonLength = b.readUInt32LE(12);
-          const jsonType = b.readUInt32LE(16);
-          if (jsonType !== 0x4e4f534a) throw new Error('Missing GLB JSON chunk');
+          if (b.readUInt32LE(16) !== 0x4e4f534a) throw new Error('Missing GLB JSON chunk');
           const gltf = JSON.parse(b.toString('utf8', 20, 20 + jsonLength).trim());
-          const names = (gltf.nodes || []).map((n, i) => n.name ? `${i}: ${n.name}` : null).filter(Boolean);
-          const joints = (gltf.skins || []).flatMap((skin, skinIndex) =>
-            (skin.joints || []).map(i => `skin ${skinIndex}: ${i} — ${gltf.nodes?.[i]?.name || '(unnamed)'}`)
-          );
-          const clips = (gltf.animations || []).map(a => a.name || '(unnamed)');
+          const nodes = gltf.nodes || [];
+          const parents = new Map();
+          nodes.forEach((node, parent) => (node.children || []).forEach(child => parents.set(child, parent)));
+          const qmul = (a, b) => [
+            a[3]*b[0] + a[0]*b[3] + a[1]*b[2] - a[2]*b[1],
+            a[3]*b[1] - a[0]*b[2] + a[1]*b[3] + a[2]*b[0],
+            a[3]*b[2] + a[0]*b[1] - a[1]*b[0] + a[2]*b[3],
+            a[3]*b[3] - a[0]*b[0] - a[1]*b[1] - a[2]*b[2]
+          ];
+          const qrot = (q, v) => {
+            const u = [q[0], q[1], q[2]];
+            const dot = u[0]*v[0] + u[1]*v[1] + u[2]*v[2];
+            const uu = u[0]*u[0] + u[1]*u[1] + u[2]*u[2];
+            const cross = [u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]];
+            return [
+              2*dot*u[0] + (q[3]*q[3]-uu)*v[0] + 2*q[3]*cross[0],
+              2*dot*u[1] + (q[3]*q[3]-uu)*v[1] + 2*q[3]*cross[1],
+              2*dot*u[2] + (q[3]*q[3]-uu)*v[2] + 2*q[3]*cross[2]
+            ];
+          };
+          const world = new Map();
+          function visit(i, pPos=[0,0,0], pRot=[0,0,0,1]) {
+            if (world.has(i)) return;
+            const n = nodes[i] || {};
+            const t = n.translation || [0,0,0];
+            const r = n.rotation || [0,0,0,1];
+            const posOffset = qrot(pRot, t);
+            const pos = pPos.map((v,k) => v + posOffset[k]);
+            const rot = qmul(pRot, r);
+            world.set(i, {pos, rot});
+            (n.children || []).forEach(child => visit(child, pos, rot));
+          }
+          nodes.forEach((_, i) => { if (!parents.has(i)) visit(i); });
+          const jointIndices = [...new Set((gltf.skins || []).flatMap(s => s.joints || []))];
+          const jointLines = jointIndices.map(i => {
+            const n = nodes[i] || {};
+            const p = world.get(i)?.pos || [NaN,NaN,NaN];
+            const children = (n.children || []).map(c => nodes[c]?.name || c).join(', ') || 'none';
+            return `#${i} ${n.name || '(unnamed)'} | world xyz: ${p.map(v=>v.toFixed(4)).join(', ')} | children: ${children}`;
+          });
+          const clipLines = (gltf.animations || []).flatMap(a => [
+            `Clip: ${a.name || '(unnamed)'}`,
+            ...(a.channels || []).map(ch => {
+              const target = ch.target || {};
+              return `  ${nodes[target.node]?.name || target.node}: ${target.path}`;
+            })
+          ]);
+          const nodeLines = nodes.map((n,i) => {
+            const p = world.get(i)?.pos || [NaN,NaN,NaN];
+            const parent = parents.has(i) ? (nodes[parents.get(i)]?.name || parents.get(i)) : 'root';
+            return `#${i} ${n.name || '(unnamed)'} | parent: ${parent} | world xyz: ${p.map(v=>v.toFixed(4)).join(', ')} | children: ${(n.children||[]).join(', ') || 'none'}`;
+          });
           const report = [
             'FightQuest humanoid avatar inspection',
             `File bytes: ${b.length}`,
-            `Nodes: ${(gltf.nodes || []).length}`,
+            `Nodes: ${nodes.length}`,
             `Skins: ${(gltf.skins || []).length}`,
-            `Joints: ${joints.length}`,
-            `Animation clips: ${clips.join(', ') || 'none'}`,
+            `Joints: ${jointIndices.length}`,
+            `Animation clips: ${(gltf.animations || []).map(a=>a.name).join(', ') || 'none'}`,
             '',
-            'JOINTS',
-            ...joints,
+            'JOINT HIERARCHY + WORLD POSITIONS',
+            ...jointLines,
             '',
-            'NAMED NODES',
-            ...names
-          ].join('\n') + '\n';
+            'ANIMATION TRACK TARGETS',
+            ...clipLines,
+            '',
+            'ALL NODES',
+            ...nodeLines
+          ].join('\\n') + '\\n';
           fs.writeFileSync('assets/office-worker-rig-report.txt', report);
           console.log(report);
           NODE
