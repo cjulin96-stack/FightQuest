@@ -38,8 +38,14 @@ function createSquatRigged(model) {
   const baseSpine1 = spine1?.quaternion.clone();
   const baseSpine2 = spine2?.quaternion.clone();
 
-  const origin = model.localToWorld(new THREE.Vector3(0, 0, 0));
-  const forward = model.localToWorld(new THREE.Vector3(0, 0, 1)).sub(origin).normalize();
+  const leftBall = getBone("ball_l");
+  const toeDirection = leftBall
+    ? worldPosition(leftBall).sub(worldPosition(leftFoot))
+    : model.localToWorld(new THREE.Vector3(0, 0, 1)).sub(model.localToWorld(new THREE.Vector3(0, 0, 0)));
+  toeDirection.y = 0;
+  const forward = toeDirection.lengthSq() > 0.000001
+    ? toeDirection.normalize()
+    : new THREE.Vector3(0, 0, 1);
 
   function captureLeg(thigh, calf, foot) {
     const thighPosition = worldPosition(thigh);
