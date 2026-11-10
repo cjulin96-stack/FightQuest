@@ -3,7 +3,6 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.m
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
 const MODEL_URL = new URL("./assets/instructor.glb", import.meta.url).href;
-const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
 function setStatus(host, message) {
   const status = host.querySelector(".fq-3d-status");
@@ -54,6 +53,9 @@ async function mount(host) {
 
   let mixer = null;
   let model = null;
+  let idleMotion = false;
+  let idleBaseY = 0;
+  let idleBaseRotation = 0;
   let frame = 0;
   const clock = new THREE.Clock();
 
@@ -86,6 +88,9 @@ async function mount(host) {
       -center.z * fitScale
     );
     scene.add(model);
+    idleMotion = requestedName === "Idle";
+    idleBaseY = model.position.y;
+    idleBaseRotation = model.rotation.y;
     camera.position.set(0, 1.15, 3.1);
     camera.lookAt(0, 0.85, 0);
     const motionNames = {
@@ -124,7 +129,12 @@ async function mount(host) {
   function animate() {
     frame = requestAnimationFrame(animate);
     const delta = Math.min(clock.getDelta(), 0.05);
-    if (mixer && !reduceMotion) mixer.update(delta);
+    if (mixer) mixer.update(delta);
+    if (model && idleMotion) {
+      const t = clock.elapsedTime;
+      model.position.y = idleBaseY + Math.sin(t * 2.1) * 0.012;
+      model.rotation.y = idleBaseRotation + Math.sin(t * 0.8) * 0.025;
+    }
     renderer.render(scene, camera);
   }
   animate();
