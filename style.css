@@ -342,3 +342,23 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 .muay-visual-demo .demo-video-wrap{margin:0;border-radius:11px;overflow:hidden}
 .muay-visual-demo .demo-video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
 @media(max-width:390px){.muay-visual-demo{padding:10px}.muay-poster-art{min-height:110px}}
+
+
+/* FightQuest 1.2.2 — distinção entre condicionamento e conteúdo técnico */
+.muay-video-complement{border-color:#42617a;background:linear-gradient(145deg,#172635,#111a27)}
+.muay-video-complement .muay-visual-heading>span{color:#8ed5ff;line-height:1.5}
+.muay-info-seal,.muay-info-shield{width:190px;height:126px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid #ff829588;border-radius:16px;background:radial-gradient(circle,#71354a99,transparent 68%)}
+.muay-info-seal:before,.muay-info-shield:before{content:"";position:absolute;width:108px;height:108px;border:1px dashed #ff9aaa88;border-radius:50%}
+.muay-info-seal b,.muay-info-shield b{font-size:27px;letter-spacing:4px;color:#fff;z-index:1}
+.muay-info-seal span,.muay-info-shield span{font-size:12px;font-weight:900;letter-spacing:2px;color:#ffb5c1;z-index:1}
+.muay-info-seal small,.muay-info-shield small{font-size:8px;letter-spacing:1px;color:#d6c3cc;z-index:1}
+.muay-info-steps{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.muay-info-steps>span{min-height:95px;padding:10px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid #52718b;border-radius:10px;background:#1c3042;text-align:center}
+.muay-info-steps i{font-style:normal;color:#8ed5ff;font-size:10px;font-weight:900}
+.muay-info-steps b{font-size:9px;color:#fff;letter-spacing:.5px}
+.muay-info-steps small{font-size:8px;color:#b9c9d7}
+.muay-info-space{width:100%;display:flex;align-items:center;justify-content:space-around;gap:5px;position:relative}
+.muay-info-space:before{content:"";position:absolute;left:23%;right:23%;top:50%;border-top:2px dashed #8ed5ff}
+.muay-info-space .space-dot{z-index:1;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#29465c;border:2px solid #8ed5ff;color:#fff;font-size:8px;font-weight:900;text-align:center}
+.muay-info-space i{position:absolute;top:calc(50% + 13px);font-size:8px;font-style:normal;color:#b9c9d7;letter-spacing:.6px}
+@media(max-width:390px){.muay-info-steps{gap:4px}.muay-info-steps>span{padding:7px 2px}.muay-info-steps b{font-size:8px}}
