@@ -32,7 +32,7 @@ function home(){const days=daysUntil(),active=trainingDays().length,streak=curre
 <button class="mission-card" data-timer><span class="mission-icon orange">◷</span><span class="mission-label">FERRAMENTA</span><strong>Cronômetro</strong><small>Controle seu tempo</small><span class="mission-arrow">↗</span></button></div>
 <section class="quote-strip"><span>“</span><div><b>DISCIPLINA ANTES DA INTENSIDADE.</b><small>Recuperação e técnica também fazem parte do treino.</small></div></section>`;}
 function strengthPage(){const checks=state.checks?.[activeWorkout]||[];return `
-<div class="page-hero"><span class="eyebrow">MÓDULO 01 / PREPARAÇÃO FÍSICA</span><h1 class="page-title">TREINO DE <em>FORÇA</em></h1><p>Escolha uma sessão e abra o guia de cada exercício. Os movimentos com mídia validada mostram vídeos reais; os demais recebem orientação escrita, sem animações improvisadas.</p></div>
+<div class="page-hero"><span class="eyebrow">MÓDULO 01 / PREPARAÇÃO FÍSICA</span><h1 class="page-title">TREINO DE <em>FORÇA</em></h1><p>Escolha uma sessão e abra o guia de cada exercício. Os vídeos mostram a execução quando disponíveis; o instrutor 3D ajuda a visualizar o modelo humano e não substitui orientação presencial.</p></div>
 <div class="workout-switch"><button class="workout-tab ${activeWorkout==="A"?"selected":""}" data-workout="A"><small>SESSÃO 01</small><b>TREINO A</b><span>Corpo todo</span></button><button class="workout-tab ${activeWorkout==="B"?"selected":""}" data-workout="B"><small>SESSÃO 02</small><b>TREINO B</b><span>Corpo todo</span></button></div>
 <div class="coach-banner"><div class="coach-badge">▶<span>●</span></div><div><b>BIBLIOTECA DE DEMONSTRAÇÕES</b><small>Vídeos reais com autoria e licença identificadas.</small></div><span class="coach-live">● MÍDIA VALIDADA</span></div>
 <div class="session-summary"><div><span class="eyebrow">SESSÃO SELECIONADA</span><b>Treino ${activeWorkout}</b></div><div><strong>06</strong><small>EXERCÍCIOS</small></div><div><strong>02</strong><small>SÉRIES BASE</small></div></div>
@@ -220,6 +220,8 @@ function openExerciseDemo(key){
     }
   };
   const media=mediaByName[item[0]];
+  const visualMotion=item[0]==="Agachamento"?"exercise-squat":"idle";
+  const viewerMarkup=coachAvatar(visualMotion,"Instrutor 3D · "+item[0]);
   const mediaMarkup=media
     ? media.kind==="video"
       ? `<div class="demo-video-wrap"><video controls playsinline preload="metadata"><source src="${media.src}" type="${media.mime}">Seu navegador não conseguiu carregar este vídeo.</video></div>`
@@ -234,9 +236,9 @@ function openExerciseDemo(key){
   ];
   const m=document.createElement("div");
   m.className="modal-backdrop";
-  m.innerHTML=`<section class="lesson-modal coach-lesson demo-video-modal"><button class="modal-close" id="closeDemo" aria-label="Fechar">×</button><span class="eyebrow">GUIA DE MOVIMENTO / MUSCULAÇÃO</span><h2>${item[0]}</h2><div class="demo-rep-count"><b>${item[1]}</b><span>REFERÊNCIA INICIAL · AJUSTE AO CONFORTO</span></div>${mediaMarkup}<div class="demo-media-credit">${media?`Mídia: <b>${media.credit}</b> · ${media.license} · <a href="${media.source}" target="_blank" rel="noopener noreferrer">Ver fonte</a>`:"Sem mídia validada para este exercício."}</div><div class="demo-caption"><b>OBSERVAÇÃO</b><p>${media?media.note:item[2]}</p></div><section class="demo-anatomy"><div><span>MÚSCULOS PRINCIPAIS</span><b>${exerciseInfo[item[0]]?.primary||"—"}</b></div><div><span>MÚSCULOS AUXILIARES</span><b>${exerciseInfo[item[0]]?.secondary||"—"}</b></div><div><span>O QUE O MOVIMENTO FAZ</span><p>${exerciseInfo[item[0]]?.action||item[2]}</p></div></section><div class="demo-steps">${steps.map((s,i)=>`<div><span>0${i+1}</span><p>${s}</p></div>`).join("")}</div><div class="lesson-detail"><b>LEMBRETE</b><p>${item[2]} Se tiver dúvidas sobre a execução, peça orientação presencial a um profissional qualificado.</p></div></section>`;
+  m.innerHTML=`<section class="lesson-modal coach-lesson demo-video-modal"><button class="modal-close" id="closeDemo" aria-label="Fechar">×</button><span class="eyebrow">GUIA DE MOVIMENTO / MUSCULAÇÃO</span><h2>${item[0]}</h2><div class="demo-rep-count"><b>${item[1]}</b><span>REFERÊNCIA INICIAL · AJUSTE AO CONFORTO</span></div>${viewerMarkup}${mediaMarkup}<div class="demo-media-credit">${media?`Mídia: <b>${media.credit}</b> · ${media.license} · <a href="${media.source}" target="_blank" rel="noopener noreferrer">Ver fonte</a>`:"Sem mídia validada para este exercício."}</div><div class="demo-caption"><b>OBSERVAÇÃO</b><p>${media?media.note:item[2]}</p></div><section class="demo-anatomy"><div><span>MÚSCULOS PRINCIPAIS</span><b>${exerciseInfo[item[0]]?.primary||"—"}</b></div><div><span>MÚSCULOS AUXILIARES</span><b>${exerciseInfo[item[0]]?.secondary||"—"}</b></div><div><span>O QUE O MOVIMENTO FAZ</span><p>${exerciseInfo[item[0]]?.action||item[2]}</p></div></section><div class="demo-steps">${steps.map((s,i)=>`<div><span>0${i+1}</span><p>${s}</p></div>`).join("")}</div><div class="lesson-detail"><b>LEMBRETE</b><p>${item[2]} Se tiver dúvidas sobre a execução, peça orientação presencial a um profissional qualificado.</p></div></section>`;
   document.body.append(m);
-  const close=()=>{m.remove();document.removeEventListener("keydown",onKey);};
+  const close=()=>{m.querySelectorAll(".fq-3d-viewer").forEach(host=>host._fq3dDispose?.());m.remove();document.removeEventListener("keydown",onKey);};
   const onKey=e=>{if(e.key==="Escape")close();};
   document.addEventListener("keydown",onKey);
   m.querySelector("#closeDemo").onclick=close;

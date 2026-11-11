@@ -8,6 +8,10 @@ on:
       - "index.html"
       - "style.css"
       - "assets/VIDEO-CREDITS.md"
+      - "instructor3d.js"
+      - "assets/instructor.glb"
+      - "assets/quaternius/**"
+      - "service-worker.js"
       - ".github/workflows/validate-app-media.yml"
   workflow_dispatch:
 
@@ -52,8 +56,55 @@ jobs:
           grep -q 'player.vimeo.com/video/265912003' app.js
           grep -q 'youtube-nocookie.com/embed/6kkQ2IV6Ymo' app.js
           grep -q 'demo-placeholder' app.js
-          ! grep -q 'instructor3d.js' index.html
-          grep -q 'app.js?v=33' index.html
-          grep -q 'style.css?v=33' index.html
+          grep -q 'coachAvatar(visualMotion' app.js
+          grep -q 'fq-3d-viewer' app.js
+          grep -q 'instructor3d.js?v=38' index.html
+          grep -q 'app.js?v=34' index.html
+          grep -q 'style.css?v=34' index.html
+          test -s assets/instructor.glb
           test -s assets/VIDEO-CREDITS.md
           echo "Twelve exercise demos, written fallbacks, anatomy notes, and source credits are present."
+
+      - name: Check instructor module syntax
+        run: node --input-type=module --check < instructor3d.js
+      - name: Validate GLB binary signature and structure
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'assets/instructor.glb';
+          const data = fs.readFileSync(file);
+          const fail = message => { throw new Error('GLB validation failed: ' + message); };
+          if (data.length < 28) fail('file is too small');
+          if (data.toString('ascii', 0, 4) !== 'glTF') fail('missing glTF binary signature');
+          const version = data.readUInt32LE(4);
+          const declaredLength = data.readUInt32LE(8);
+          if (version !== 2) fail('expected glTF 2.0, got version ' + version);
+          if (declaredLength !== data.length) fail('header length ' + declaredLength + ' differs from file size ' + data.length);
+          const jsonLength = data.readUInt32LE(12);
+          const jsonType = data.readUInt32LE(16);
+          if (jsonType !== 0x4e4f534a) fail('first chunk is not JSON');
+          if (20 + jsonLength + 8 > data.length) fail('JSON chunk exceeds file boundary');
+          let gltf;
+          try { gltf = JSON.parse(data.subarray(20, 20 + jsonLength).toString('utf8').trim()); }
+          catch (error) { fail('JSON chunk cannot be parsed: ' + error.message); }
+          if (gltf.asset?.version !== '2.0') fail('asset.version is not 2.0');
+          if (!gltf.scenes?.length || !gltf.nodes?.length || !gltf.meshes?.length || !gltf.skins?.length) fail('scene, nodes, meshes, or skin missing');
+          const names = (gltf.animations || []).map(animation => (animation.name || '').toLowerCase());
+          if (!names.includes('idle')) fail('idle animation missing');
+          const binOffset = 20 + jsonLength;
+          const binLength = data.readUInt32LE(binOffset);
+          const binType = data.readUInt32LE(binOffset + 4);
+          if (binType !== 0x004e4942) fail('second chunk is not BIN');
+          if (binOffset + 8 + binLength > data.length) fail('BIN chunk exceeds file boundary');
+          console.log('Valid GLB v' + version + ': ' + data.length + ' bytes; ' + gltf.nodes.length + ' nodes; ' + gltf.meshes.length + ' meshes; animations: ' + names.join(', '));
+          NODE
+      - name: Set up Node.js for browser smoke test
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Chromium smoke-test runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify deployed 3D viewers load
+        run: node scripts/verify-instructor-browser.cjs
