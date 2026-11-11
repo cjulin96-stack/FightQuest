@@ -98,10 +98,10 @@ function openExerciseDemo(key){
       note:"Demonstra a trajetória da remada curvada. O equipamento do vídeo pode ser diferente da mochila leve sugerida; não copie a carga mostrada."
     },
     "Afundo alternado":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/beGBOkX8Cp0",open:"https://www.youtube.com/watch?v=beGBOkX8Cp0",
-      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
-      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
-      note:"Demonstra um afundo reverso. Faça alternando as pernas, com amplitude confortável e sem pressa."
+      kind:"embed",src:"https://www.dvidshub.net/video/embed/692857",open:"https://www.dvidshub.net/video/692857/reverse-lunge",
+      credit:"U.S. Marine Corps · DVIDS",license:"Domínio público (DVIDS)",
+      source:"https://www.dvidshub.net/video/692857/reverse-lunge",
+      note:"Demonstra um afundo reverso com peso corporal. Alterne as pernas a cada repetição; mantenha o pé da frente apoiado e faça o movimento com controle."
     },
     "Ponte de glúteos":{
       kind:"embed",src:"https://www.youtube-nocookie.com/embed/6VP5KFF54N0",open:"https://www.youtube.com/watch?v=6VP5KFF54N0",
@@ -128,10 +128,10 @@ function openExerciseDemo(key){
       note:"Demonstra o bird dog, estendendo braço e perna opostos sem girar o tronco."
     },
     "Rosca com mochila leve":{
-      kind:"embed",src:"https://www.youtube-nocookie.com/embed/OyKfRiwy66U",open:"https://www.youtube.com/watch?v=OyKfRiwy66U",
-      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
-      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
-      note:"O vídeo demonstra rosca de bíceps. A carga e o equipamento podem ser diferentes; não copie o peso mostrado."
+      kind:"embed",src:"https://player.vimeo.com/video/265912003",open:"https://vimeo.com/265912003",
+      credit:"Elite Force Gear",license:"Vídeo externo incorporado",
+      source:"https://vimeo.com/265912003",
+      note:"Demonstra uma rosca de bíceps usando uma bolsa de carga. Use apenas uma mochila leve e bem fechada; mantenha os cotovelos próximos ao tronco e não balance o corpo."
     },
     "Levantamento romeno leve":{
       kind:"embed",src:"https://www.youtube-nocookie.com/embed/6kkQ2IV6Ymo",open:"https://www.youtube.com/watch?v=6kkQ2IV6Ymo",
