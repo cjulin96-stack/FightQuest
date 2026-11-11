@@ -325,3 +325,20 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 @keyframes muayLoading{0%{transform:translateX(-110%)}100%{transform:translateX(290%)}}
 @media(max-width:390px){.muay-academy-banner{grid-template-columns:48px 1fr auto;padding:12px;gap:9px}.muay-academy-emblem{width:46px;height:46px;font-size:23px}.muay-academy-copy>b{font-size:13px}.muay-level-card{gap:8px;padding:10px}.muay-level-card .level-number{width:36px;height:38px}.muay-level-card .level-open{min-width:70px;padding:9px 6px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){.muay-launch-orbit:before,.muay-launch-orbit:after,.muay-launch-bar i{animation:none}}
+
+
+/* FightQuest 1.2.1 — visual learning panels for Muay Thai */
+.muay-visual-demo{margin:14px 0 17px;padding:12px;border:1px solid #4a3440;border-radius:15px;background:linear-gradient(145deg,#211923,#121a27);overflow:hidden}
+.muay-visual-heading{display:grid;gap:4px;margin-bottom:10px}
+.muay-visual-heading>span{font-size:8px;font-weight:900;letter-spacing:1.4px;color:#ff8295}
+.muay-visual-heading>b{font-size:13px;color:#f6edf2}
+.muay-visual-demo>p{margin:9px 0 0;color:#b9c2ce;font-size:10px;line-height:1.55}
+.muay-visual-demo>a{display:inline-block;margin-top:8px;color:#ff9aaa;font-size:10px;text-decoration:underline}
+.muay-poster-art{position:relative;min-height:126px;display:grid;place-items:center;overflow:hidden;border:1px solid #5c3846;border-radius:12px;background:radial-gradient(circle at 50% 45%,#73344866,transparent 45%),linear-gradient(130deg,#261b2a,#121e2a)}
+.muay-poster-art:before,.muay-poster-art:after{content:"";position:absolute;width:160px;height:160px;border:1px solid #ff829533;border-radius:50%;animation:muayOrbit 18s linear infinite}
+.muay-poster-art:after{width:112px;height:112px;border-style:dashed;animation-direction:reverse;animation-duration:13s}
+.muay-poster-art>span{z-index:1;font-size:53px;filter:drop-shadow(0 5px 18px #ff708655)}
+.muay-poster-art>i{position:absolute;right:12px;bottom:9px;color:#ffffff55;font:900 11px 'Barlow Condensed',sans-serif;letter-spacing:2px;font-style:normal}
+.muay-visual-demo .demo-video-wrap{margin:0;border-radius:11px;overflow:hidden}
+.muay-visual-demo .demo-video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+@media(max-width:390px){.muay-visual-demo{padding:10px}.muay-poster-art{min-height:110px}}
