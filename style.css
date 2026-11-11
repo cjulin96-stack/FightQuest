@@ -266,3 +266,7 @@ body{background:radial-gradient(ellipse at 82% -8%,#35121a 0,transparent 38%),#0
 .demo-anatomy span{font-size:8px;letter-spacing:1.2px;font-weight:800;color:#70dcd6}
 .demo-anatomy b{font-size:11px;line-height:1.5;color:#f0f6ff}
 .demo-anatomy p{margin:0;font-size:10px;line-height:1.6;color:#b7c8d9}
+
+/* FightQuest 1.1 — preparação, recuperação e temporizador de descanso */
+.prep-panel{margin:14px 0 18px;padding:16px;border:1px solid #542632;border-radius:16px;background:linear-gradient(145deg,#21151a,#111217)}.prep-heading{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.prep-heading>b{font-size:15px}.prep-columns{display:grid;gap:10px}.prep-columns>div{padding:11px;border:1px solid #38232a;border-radius:12px;background:#171419}.prep-columns strong{font-size:11px;color:#ff7184}.prep-columns p{font-size:10px;line-height:1.6;color:#c6bbc0;margin:6px 0 0}.prep-panel>small{display:block;margin-top:11px;font-size:9px;line-height:1.5;color:var(--muted)}.rest-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:18px 0 0}.rest-preset{padding:10px 4px;border:1px solid #54303a;border-radius:11px;background:#1c1418;color:#e8dce0;font-size:11px;font-weight:800}.rest-preset.selected{border-color:#ff5367;background:#401a25;color:#ff9aaa;box-shadow:inset 0 0 0 1px #ff536733}.rest-status{min-height:18px;color:#ff9aaa;font-size:10px}.rest-modal .timer-display{margin:14px 0 5px}
+@media(min-width:600px){.prep-columns{grid-template-columns:1fr 1fr}}
