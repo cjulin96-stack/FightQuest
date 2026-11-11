@@ -53,7 +53,7 @@ jobs:
           grep -q 'youtube-nocookie.com/embed/6kkQ2IV6Ymo' app.js
           grep -q 'demo-placeholder' app.js
           ! grep -q 'instructor3d.js' index.html
-          grep -q 'app.js?v=31' index.html
-          grep -q 'style.css?v=31' index.html
+          grep -q 'app.js?v=32' index.html
+          grep -q 'style.css?v=32' index.html
           test -s assets/VIDEO-CREDITS.md
           echo "Twelve exercise demos, written fallbacks, anatomy notes, and source credits are present."
