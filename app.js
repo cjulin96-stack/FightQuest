@@ -78,6 +78,48 @@ function openExerciseDemo(key){
       credit:"FitnessScape",license:"Creative Commons BY 3.0",
       source:"https://commons.wikimedia.org/wiki/File:Bent-over_row_-_exercise_demonstration_video.webm",
       note:"Demonstra a trajetória da remada curvada. O equipamento do vídeo pode ser diferente da mochila leve sugerida; não copie a carga mostrada."
+    },
+    "Afundo alternado":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/beGBOkX8Cp0",open:"https://www.youtube.com/watch?v=beGBOkX8Cp0",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"Demonstra um afundo reverso. Faça alternando as pernas, com amplitude confortável e sem pressa."
+    },
+    "Ponte de glúteos":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/6VP5KFF54N0",open:"https://www.youtube.com/watch?v=6VP5KFF54N0",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"Demonstra a ponte de glúteos no chão, com controle do quadril."
+    },
+    "Elevação de panturrilha":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/LFfmd7lzVWQ",open:"https://www.youtube.com/watch?v=LFfmd7lzVWQ",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"Demonstra elevação de panturrilha no chão. Use apoio estável se precisar de equilíbrio."
+    },
+    "Dead bug":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/Gse7WT-spEQ",open:"https://www.youtube.com/watch?v=Gse7WT-spEQ",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"Demonstra o dead bug. Mantenha o tronco estável e mova braços e pernas de forma controlada."
+    },
+    "Bird dog":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/GVEJIzsQKqw",open:"https://www.youtube.com/watch?v=GVEJIzsQKqw",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"Demonstra o bird dog, estendendo braço e perna opostos sem girar o tronco."
+    },
+    "Rosca com mochila leve":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/OyKfRiwy66U",open:"https://www.youtube.com/watch?v=OyKfRiwy66U",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"O vídeo demonstra rosca de bíceps. A carga e o equipamento podem ser diferentes; não copie o peso mostrado."
+    },
+    "Levantamento romeno leve":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/6kkQ2IV6Ymo",open:"https://www.youtube.com/watch?v=6kkQ2IV6Ymo",
+      credit:"Sport Keele · Keele University",license:"Vídeo externo incorporado",
+      source:"https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/",
+      note:"Demonstra o padrão de dobradiça do quadril do levantamento romeno. O equipamento pode diferir; não copie a carga do vídeo."
     }
   };
   const media=mediaByName[item[0]];
@@ -85,7 +127,7 @@ function openExerciseDemo(key){
     ? media.kind==="video"
       ? `<div class="demo-video-wrap"><video controls playsinline preload="metadata"><source src="${media.src}" type="${media.mime}">Seu navegador não conseguiu carregar este vídeo.</video></div>`
       : media.kind==="embed"
-        ? `<div class="demo-video-wrap demo-embed-wrap"><iframe src="${media.src}" title="Demonstração de ${item[0]}" loading="lazy" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
+        ? `<div class="demo-video-wrap demo-embed-wrap"><iframe src="${media.src}" title="Demonstração de ${item[0]}" loading="lazy" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>${media.open?`<p class="demo-external-link"><a href="${media.open}" target="_blank" rel="noopener noreferrer">Se não carregar, abrir vídeo fora do app ↗</a></p>`:"" }`
         : `<div class="demo-video-wrap demo-gif-wrap"><img src="${media.src}" alt="Demonstração animada de elevação de panturrilha" loading="lazy"></div>`
     : `<div class="demo-placeholder"><span>GUIA DE MOVIMENTO</span><b>Vídeo ainda não disponível para este exercício</b><p>Não vamos mostrar um vídeo de outro movimento como se fosse este. Use as orientações escritas abaixo.</p></div>`;
   const steps=[
