@@ -79,8 +79,14 @@ const muayVisuals=[
 ];
 function muayVisualMarkup(i){
   const v=muayVisuals[i];if(!v)return "";
-  if(v.kind==="video")return `<section class="muay-visual-demo"><div class="muay-visual-heading"><span>DEMONSTRAÇÃO VISUAL</span><b>${v.title}</b></div><div class="demo-video-wrap demo-embed-wrap"><iframe src="${v.src}" title="${v.title}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p>${v.caption}</p><a href="${v.open}" target="_blank" rel="noopener noreferrer">Se o vídeo não carregar, abrir fora do app ↗</a></section>`;
-  return `<section class="muay-visual-demo muay-visual-poster"><div class="muay-visual-heading"><span>GUIA VISUAL</span><b>${v.title}</b></div><div class="muay-poster-art"><span>${v.symbol}</span><i>FQ</i></div><p>${v.caption}</p></section>`;
+  if(v.kind==="video")return `<section class="muay-visual-demo muay-video-complement"><div class="muay-visual-heading"><span>PREPARAÇÃO FÍSICA COMPLEMENTAR · NÃO É TÉCNICA DE LUTA</span><b>${v.title}</b></div><div class="demo-video-wrap demo-embed-wrap"><iframe src="${v.src}" title="${v.title}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p>${v.caption}</p><a href="${v.open}" target="_blank" rel="noopener noreferrer">Se o vídeo não carregar, abrir fora do app ↗</a></section>`;
+  const art=[
+    '<div class="muay-info-seal"><b>THAI</b><span>CULTURA</span><small>RESPEITO · TRADIÇÃO</small></div>',
+    '<div class="muay-info-steps"><span><i>01</i><b>PROFESSOR</b><small>supervisão</small></span><span><i>02</i><b>ESPAÇO</b><small>área livre</small></span><span><i>03</i><b>PROTEÇÃO</b><small>equipamento</small></span></div>',
+    '<div class="muay-info-shield"><b>FQ</b><span>SEGURANÇA</span><small>REGRAS E ORIENTAÇÃO</small></div>',
+    '<div class="muay-info-space"><span class="space-dot">PESSOA A</span><i>DISTÂNCIA SEGURA</i><span class="space-dot">PESSOA B</span></div>'
+  ];
+  return `<section class="muay-visual-demo muay-visual-poster"><div class="muay-visual-heading"><span>PAINEL ILUSTRADO DE APRENDIZAGEM</span><b>${v.title}</b></div><div class="muay-poster-art muay-poster-${i}">${art[i]||'<b>FIGHTQUEST</b>'}<i>FQ</i></div><p>${v.caption}</p></section>`;
 }
 function openLevel(i){
   const data=muayLessons[i];if(!data)return;
