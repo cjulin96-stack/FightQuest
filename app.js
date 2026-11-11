@@ -73,6 +73,24 @@ function openExerciseDemo(key){
       source:"https://www.dvidshub.net/video/517502/body-weight-squat",
       note:"Vídeo de agachamento com o peso do próprio corpo, sem barra ou halteres."
     },
+    "Flexão inclinada":{
+      kind:"embed",src:"https://player.vimeo.com/video/76827072",open:"https://vimeo.com/76827072",
+      credit:"MoveSkill",license:"Vídeo externo incorporado",
+      source:"https://vimeo.com/76827072",
+      note:"Demonstra uma flexão inclinada com apoio elevado. Confira se a altura do apoio é estável e mantenha o corpo alinhado."
+    },
+    "Flexão com joelhos":{
+      kind:"embed",src:"https://www.youtube-nocookie.com/embed/X9sGmsGYYE0",open:"https://www.youtube.com/watch?v=X9sGmsGYYE0",
+      credit:"PureGym · referência via Tanrenica",license:"Vídeo externo incorporado",
+      source:"https://tanrenica.com/exercises/knee-push-up?lang=pt",
+      note:"Demonstra a flexão com joelhos apoiados. O vídeo é do YouTube; se o player não carregar, use o link externo."
+    },
+    "Aperto de toalha":{
+      kind:"embed",src:"https://player.vimeo.com/video/329687341",open:"https://vimeo.com/329687341",
+      credit:"E-rehab",license:"Vídeo externo incorporado",
+      source:"https://vimeo.com/329687341",
+      note:"Demonstra um aperto de toalha para trabalhar a pegada. Faça uma contração confortável e solte sem forçar os dedos."
+    },
     "Remada com mochila leve":{
       kind:"video",src:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Bent-over_row_-_exercise_demonstration_video.webm",mime:"video/webm",
       credit:"FitnessScape",license:"Creative Commons BY 3.0",
