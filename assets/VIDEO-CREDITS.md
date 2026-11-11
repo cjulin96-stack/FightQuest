@@ -11,10 +11,10 @@ As demonstrações são incorporadas dos provedores originais. O FightQuest não
 - **Dead bug:** Sport Keele / Keele University — vídeo “Deadbug” na biblioteca https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/ — player original do YouTube.
 
 ## Treino B
-- **Afundo alternado:** Sport Keele / Keele University — vídeo “Reverse Lunge” na biblioteca https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/ — demonstra afundo reverso; faça alternando as pernas.
+- **Afundo alternado:** U.S. Marine Corps / DVIDS — https://www.dvidshub.net/video/692857/reverse-lunge — domínio público indicado pelo DVIDS; demonstra afundo reverso com peso corporal.
 - **Flexão com joelhos:** PureGym — vídeo de referência ligado pela biblioteca Tanrenica https://tanrenica.com/exercises/knee-push-up?lang=pt — player original do YouTube; se não carregar, use o link externo.
 - **Levantamento romeno leve:** Sport Keele / Keele University — vídeo “Romanian/Stiff-legged deadlift” na biblioteca https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/ — a carga/equipamento do vídeo pode diferir; não copie o peso mostrado.
-- **Rosca com mochila leve:** Sport Keele / Keele University — vídeo “Bicep curl” na biblioteca https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/ — demonstra rosca de bíceps; o equipamento pode diferir.
+- **Rosca com mochila leve:** Elite Force Gear — https://vimeo.com/265912003 — vídeo externo incorporado; demonstra rosca usando bolsa de carga, não uma mochila doméstica.
 - **Bird dog:** Sport Keele / Keele University — vídeo “Bird Dog” na biblioteca https://www.keele.ac.uk/sportatkeele/activekeele/exerciselibrary/ — player original do YouTube.
 - **Aperto de toalha:** E-rehab — https://vimeo.com/329687341 — demonstração externa incorporada do Vimeo.
 
