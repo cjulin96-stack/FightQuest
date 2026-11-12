@@ -1,5 +1,5 @@
 const CACHE = "fightquest-shell-v40";
-const FILES = ["./","./index.html","./style.css?v=35","./style.css","./app.js?v=35","./app.js","./instructor3d.js?v=38","./instructor3d.js","./manifest.json","./icons/icon.svg"];
+const FILES = ["./","./index.html","./style.css?v=34","./style.css","./app.js?v=34","./app.js","./instructor3d.js?v=38","./instructor3d.js","./manifest.json","./icons/icon.svg"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",event=>{
